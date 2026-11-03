@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 
-st.write('analtycis.page')
+# st.write('analtycis.page')
 from bandit_utils import (
     beta_pdf_points,
     carousels_table,
