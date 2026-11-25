@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/</loc>
+         <lastmod>2026-11-25</lastmod>
+    </url>
+    <url>
+         <loc>https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/api/</loc>
+         <lastmod>2026-11-25</lastmod>
+    </url>
+    <url>
+         <loc>https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/api_models/</loc>
+         <lastmod>2026-11-25</lastmod>
+    </url>
+    <url>
+         <loc>https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/app/</loc>
+         <lastmod>2026-11-25</lastmod>
+    </url>
+    <url>
+         <loc>https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/demo/</loc>
+         <lastmod>2026-11-25</lastmod>
+    </url>
+    <url>
+         <loc>https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/etl/</loc>
+         <lastmod>2026-11-25</lastmod>
+    </url>
+</urlset>

@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Product – DS223 Data Products</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../img/auaicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-c0901e6b964c9030d3ea5df25da8f7b7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ef73a86292608347c76750a25777438b.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../img/auaicon.ico" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">DS223 Data Products</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../content/01_problem_definition.html" aria-current="page"> 
+<span class="menu-text">Product</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/02_docker.html"> 
+<span class="menu-text">Docker</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/03_git.html"> 
+<span class="menu-text">Git</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/04_database.html"> 
+<span class="menu-text">Database | PostgreSQL</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/05_frontend.html"> 
+<span class="menu-text">Frontend | Streamlit</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/06_backend.html"> 
+<span class="menu-text">Backend | FastAPI</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/07_documentation.html"> 
+<span class="menu-text">Documentation | MKdocs</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hovhannisyan91"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Product</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#how-to-build-a-data-product" id="toc-how-to-build-a-data-product" class="nav-link active" data-scroll-target="#how-to-build-a-data-product">How to Build a Data Product</a>
+  <ul class="collapse">
+  <li><a href="#product-mindset" id="toc-product-mindset" class="nav-link" data-scroll-target="#product-mindset">Product Mindset</a>
+  <ul class="collapse">
+  <li><a href="#the-product-building-cycle" id="toc-the-product-building-cycle" class="nav-link" data-scroll-target="#the-product-building-cycle">The Product-Building Cycle</a></li>
+  <li><a href="#start-with-the-user-and-the-problem" id="toc-start-with-the-user-and-the-problem" class="nav-link" data-scroll-target="#start-with-the-user-and-the-problem">Start with the User and the Problem</a></li>
+  <li><a href="#define-an-mvp" id="toc-define-an-mvp" class="nav-link" data-scroll-target="#define-an-mvp">Define an MVP</a></li>
+  <li><a href="#prioritize-with-moscow" id="toc-prioritize-with-moscow" class="nav-link" data-scroll-target="#prioritize-with-moscow">Prioritize with MoSCoW</a></li>
+  <li><a href="#sketch-the-user-flow" id="toc-sketch-the-user-flow" class="nav-link" data-scroll-target="#sketch-the-user-flow">Sketch the User Flow</a></li>
+  <li><a href="#build-a-usable-version-then-improve-it" id="toc-build-a-usable-version-then-improve-it" class="nav-link" data-scroll-target="#build-a-usable-version-then-improve-it">Build a Usable Version, Then Improve It</a></li>
+  </ul></li>
+  <li><a href="#roadmap-and-tasks" id="toc-roadmap-and-tasks" class="nav-link" data-scroll-target="#roadmap-and-tasks">Roadmap and Tasks</a>
+  <ul class="collapse">
+  <li><a href="#roadmap" id="toc-roadmap" class="nav-link" data-scroll-target="#roadmap">Roadmap</a></li>
+  <li><a href="#tasks" id="toc-tasks" class="nav-link" data-scroll-target="#tasks">Tasks</a></li>
+  </ul></li>
+  <li><a href="#data-product-components" id="toc-data-product-components" class="nav-link" data-scroll-target="#data-product-components">Data Product Components</a>
+  <ul class="collapse">
+  <li><a href="#frontend-backend-and-database" id="toc-frontend-backend-and-database" class="nav-link" data-scroll-target="#frontend-backend-and-database">Frontend, Backend, and Database</a></li>
+  <li><a href="#how-they-connect" id="toc-how-they-connect" class="nav-link" data-scroll-target="#how-they-connect">How They Connect</a></li>
+  <li><a href="#where-does-the-data-science-fit" id="toc-where-does-the-data-science-fit" class="nav-link" data-scroll-target="#where-does-the-data-science-fit">Where Does the Data Science Fit?</a></li>
+  <li><a href="#data-preparation-and-processing" id="toc-data-preparation-and-processing" class="nav-link" data-scroll-target="#data-preparation-and-processing">Data Preparation and Processing</a></li>
+  <li><a href="#data-analysis-and-modeling" id="toc-data-analysis-and-modeling" class="nav-link" data-scroll-target="#data-analysis-and-modeling">Data Analysis and Modeling</a></li>
+  <li><a href="#database" id="toc-database" class="nav-link" data-scroll-target="#database">Database</a></li>
+  <li><a href="#backend" id="toc-backend" class="nav-link" data-scroll-target="#backend">Backend</a></li>
+  <li><a href="#frontend" id="toc-frontend" class="nav-link" data-scroll-target="#frontend">Frontend</a></li>
+  <li><a href="#version-control-and-reproducible-environments" id="toc-version-control-and-reproducible-environments" class="nav-link" data-scroll-target="#version-control-and-reproducible-environments">Version Control and Reproducible Environments</a></li>
+  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
+  </ul></li>
+  <li><a href="#microservices-architecture" id="toc-microservices-architecture" class="nav-link" data-scroll-target="#microservices-architecture">Microservices Architecture</a>
+  <ul class="collapse">
+  <li><a href="#start-with-the-architecture-we-are-building" id="toc-start-with-the-architecture-we-are-building" class="nav-link" data-scroll-target="#start-with-the-architecture-we-are-building">Start with the Architecture We Are Building</a></li>
+  <li><a href="#a-container-and-a-microservice-describe-different-things" id="toc-a-container-and-a-microservice-describe-different-things" class="nav-link" data-scroll-target="#a-container-and-a-microservice-describe-different-things">A Container and a Microservice Describe Different Things</a></li>
+  <li><a href="#when-could-we-split-the-backend-further" id="toc-when-could-we-split-the-backend-further" class="nav-link" data-scroll-target="#when-could-we-split-the-backend-further">When Could We Split the Backend Further?</a></li>
+  <li><a href="#follow-a-request-across-the-boundaries" id="toc-follow-a-request-across-the-boundaries" class="nav-link" data-scroll-target="#follow-a-request-across-the-boundaries">Follow a Request Across the Boundaries</a></li>
+  <li><a href="#what-do-we-gain-and-what-must-we-handle" id="toc-what-do-we-gain-and-what-must-we-handle" class="nav-link" data-scroll-target="#what-do-we-gain-and-what-must-we-handle">What Do We Gain, and What Must We Handle?</a></li>
+  </ul></li>
+  <li><a href="#what-is-a-container" id="toc-what-is-a-container" class="nav-link" data-scroll-target="#what-is-a-container">What Is a Container?</a>
+  <ul class="collapse">
+  <li><a href="#dockerfile-image-container" id="toc-dockerfile-image-container" class="nav-link" data-scroll-target="#dockerfile-image-container">Dockerfile → Image → Container</a></li>
+  </ul></li>
+  <li><a href="#what-is-a-docker-host" id="toc-what-is-a-docker-host" class="nav-link" data-scroll-target="#what-is-a-docker-host">What Is a Docker Host?</a>
+  <ul class="collapse">
+  <li><a href="#the-same-product-running-in-containers" id="toc-the-same-product-running-in-containers" class="nav-link" data-scroll-target="#the-same-product-running-in-containers">The Same Product, Running in Containers</a></li>
+  <li><a href="#what-does-docker-compose-add" id="toc-what-does-docker-compose-add" class="nav-link" data-scroll-target="#what-does-docker-compose-add">What Does Docker Compose Add?</a></li>
+  <li><a href="#build-toward-this-architecture" id="toc-build-toward-this-architecture" class="nav-link" data-scroll-target="#build-toward-this-architecture">Build Toward This Architecture</a></li>
+  </ul></li>
+  <li><a href="#architecture-reference" id="toc-architecture-reference" class="nav-link" data-scroll-target="#architecture-reference">Architecture Reference</a>
+  <ul class="collapse">
+  <li><a href="#data-flow" id="toc-data-flow" class="nav-link" data-scroll-target="#data-flow">Data Flow</a></li>
+  <li><a href="#example-architecture" id="toc-example-architecture" class="nav-link" data-scroll-target="#example-architecture">Example Architecture</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#bayesian-carousel-bandits" id="toc-bayesian-carousel-bandits" class="nav-link" data-scroll-target="#bayesian-carousel-bandits">Bayesian Carousel Bandits</a>
+  <ul class="collapse">
+  <li><a href="#product-summary" id="toc-product-summary" class="nav-link" data-scroll-target="#product-summary">Product Summary</a></li>
+  <li><a href="#problem-definition" id="toc-problem-definition" class="nav-link" data-scroll-target="#problem-definition">Problem Definition</a>
+  <ul class="collapse">
+  <li><a href="#business-problem" id="toc-business-problem" class="nav-link" data-scroll-target="#business-problem">Business Problem</a></li>
+  <li><a href="#specific-problem-statement" id="toc-specific-problem-statement" class="nav-link" data-scroll-target="#specific-problem-statement">Specific Problem Statement</a></li>
+  </ul></li>
+  <li><a href="#proposed-solution" id="toc-proposed-solution" class="nav-link" data-scroll-target="#proposed-solution">Proposed Solution</a>
+  <ul class="collapse">
+  <li><a href="#core-idea" id="toc-core-idea" class="nav-link" data-scroll-target="#core-idea">Core Idea</a></li>
+  </ul></li>
+  <li><a href="#current-mvp" id="toc-current-mvp" class="nav-link" data-scroll-target="#current-mvp">Current MVP</a>
+  <ul class="collapse">
+  <li><a href="#what-we-have-built" id="toc-what-we-have-built" class="nav-link" data-scroll-target="#what-we-have-built">What We Have Built</a></li>
+  </ul></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a>
+  <ul class="collapse">
+  <li><a href="#reward-structure" id="toc-reward-structure" class="nav-link" data-scroll-target="#reward-structure">Reward Structure</a></li>
+  <li><a href="#bayesian-model" id="toc-bayesian-model" class="nav-link" data-scroll-target="#bayesian-model">Bayesian Model</a></li>
+  <li><a href="#selection-strategy" id="toc-selection-strategy" class="nav-link" data-scroll-target="#selection-strategy">Selection Strategy</a></li>
+  <li><a href="#the-value" id="toc-the-value" class="nav-link" data-scroll-target="#the-value">The Value</a></li>
+  </ul></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture">Architecture</a></li>
+  <li><a href="#steps-to-achieve-the-full-product" id="toc-steps-to-achieve-the-full-product" class="nav-link" data-scroll-target="#steps-to-achieve-the-full-product">Steps to Achieve the Full Product</a>
+  <ul class="collapse">
+  <li><a href="#step-1-finalize-the-mvp-logic" id="toc-step-1-finalize-the-mvp-logic" class="nav-link" data-scroll-target="#step-1-finalize-the-mvp-logic">Step 1 | Finalize the MVP logic</a></li>
+  <li><a href="#step-2-separate-frontend-from-logic" id="toc-step-2-separate-frontend-from-logic" class="nav-link" data-scroll-target="#step-2-separate-frontend-from-logic">Step 2 | Separate frontend from logic</a></li>
+  <li><a href="#step-3-build-backend-endpoints" id="toc-step-3-build-backend-endpoints" class="nav-link" data-scroll-target="#step-3-build-backend-endpoints">Step 3 | Build backend endpoints</a></li>
+  <li><a href="#step-4-add-database-persistence" id="toc-step-4-add-database-persistence" class="nav-link" data-scroll-target="#step-4-add-database-persistence">Step 4 | Add database persistence</a></li>
+  <li><a href="#step-5-connect-frontend-to-backend" id="toc-step-5-connect-frontend-to-backend" class="nav-link" data-scroll-target="#step-5-connect-frontend-to-backend">Step 5 | Connect frontend to backend</a></li>
+  <li><a href="#step-6-improve-analytics" id="toc-step-6-improve-analytics" class="nav-link" data-scroll-target="#step-6-improve-analytics">Step 6 | Improve analytics</a></li>
+  <li><a href="#step-7-polish-product-ux" id="toc-step-7-polish-product-ux" class="nav-link" data-scroll-target="#step-7-polish-product-ux">Step 7 | Polish product UX</a></li>
+  <li><a href="#step-8-containerize-and-deploy" id="toc-step-8-containerize-and-deploy" class="nav-link" data-scroll-target="#step-8-containerize-and-deploy">Step 8 | Containerize and deploy</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Product</h1>
+<p class="subtitle lead">Product Development, MVP, and Bayesian Carousel Bandits</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Docker</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">SQL</div>
+    <div class="quarto-category">PostgreSQL</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="how-to-build-a-data-product" class="level1">
+<h1>How to Build a Data Product</h1>
+<p>We will start with the general process: define a useful product, choose its MVP, prioritize the work, and connect the components. The diagrams below support each step. Then we will apply the process to the <strong>Bayesian Carousel Bandits</strong> example.</p>
+<section id="product-mindset" class="level2">
+<h2 class="anchored" data-anchor-id="product-mindset">Product Mindset</h2>
+<section id="the-product-building-cycle" class="level3">
+<h3 class="anchored" data-anchor-id="the-product-building-cycle">The Product-Building Cycle</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    accTitle: The product-building cycle
+    accDescr: Define a user problem, choose a small MVP, build it, observe use, and improve it using feedback.
+    P["Understand the&lt;br/&gt;user's problem"] --&gt; M["Choose a&lt;br/&gt;small MVP"]
+    M --&gt; B["Build a&lt;br/&gt;usable version"]
+    B --&gt; T["Let users try it&lt;br/&gt;and measure results"]
+    T --&gt; I["Choose the&lt;br/&gt;next improvement"]
+    I --&gt; M
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Read the diagram from left to right.</strong> Start with a decision the user needs to make, choose the smallest useful solution, and build something they can try. Observe what happens and use the results to choose the next version.</p>
+<p>For the carousel example, the first useful flow is: <strong>create a carousel → show alternatives → record a click → see the results</strong>. Later versions can add richer analytics and more deployment options.</p>
+</section>
+<section id="start-with-the-user-and-the-problem" class="level3">
+<h3 class="anchored" data-anchor-id="start-with-the-user-and-the-problem">Start with the User and the Problem</h3>
+<p>Before choosing tools or building a model, answer:</p>
+<ol type="1">
+<li><strong>Who is the user?</strong> Identify who will use the result.</li>
+<li><strong>What decision do they need to make?</strong> Describe the problem in practical terms.</li>
+<li><strong>How will the product help?</strong> Define the action or insight it should provide.</li>
+<li><strong>How will we measure success?</strong> Choose a metric linked to the user’s goal.</li>
+</ol>
+<p>For example, a marketer needs to choose which offers to display in a carousel. The product uses click feedback to update its selection and reports metrics such as click-through rate and cumulative reward.</p>
+</section>
+<section id="define-an-mvp" class="level3">
+<h3 class="anchored" data-anchor-id="define-an-mvp">Define an MVP</h3>
+<p>The <strong>Minimum Viable Product (MVP)</strong> is the smallest usable version that lets us try the core idea and learn from feedback.</p>
+<ul>
+<li>Choose one clear user flow.</li>
+<li>Include only the features needed to complete that flow.</li>
+<li>Make the result visible and easy to try.</li>
+<li>Use feedback and measured results to decide what to improve next.</li>
+</ul>
+<p>Keep quality consistent across the core user flow so the complete experience is usable.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/wrong_mvp.jpeg" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>An unevenly developed MVP illustrates why the whole user experience needs attention</figcaption>
+</figure>
+</div>
+</section>
+<section id="prioritize-with-moscow" class="level3">
+<h3 class="anchored" data-anchor-id="prioritize-with-moscow">Prioritize with MoSCoW</h3>
+<p>Separate features into <strong>Must have</strong>, <strong>Should have</strong>, <strong>Could have</strong>, and <strong>Won’t have for now</strong>. Keep the first version focused on the must-have features.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/MoSCoW.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>MoSCoW prioritization board: Must Have, Should Have, Could Have, and Won’t Have</figcaption>
+</figure>
+</div>
+</section>
+<section id="sketch-the-user-flow" class="level3">
+<h3 class="anchored" data-anchor-id="sketch-the-user-flow">Sketch the User Flow</h3>
+<p>Describe what the user does from start to finish. Build a low-fidelity mockup to check that the inputs, actions, and results make sense before implementing the interface.</p>
+<p>Tools such as <a href="https://stitch.withgoogle.com">Stitch</a> and <a href="https://www.figma.com">Figma</a> can help turn the idea into a mockup.</p>
+</section>
+<section id="build-a-usable-version-then-improve-it" class="level3">
+<h3 class="anchored" data-anchor-id="build-a-usable-version-then-improve-it">Build a Usable Version, Then Improve It</h3>
+<p>Each iteration should let the user do something useful. Start with a working prototype and add complexity when it supports the product’s purpose.</p>
+<p>The lower sequence delivers a usable way to travel at every stage. Apply the same idea to a data product: each version should complete a useful user flow.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/correct_mvp.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>MVP development from a skateboard to a car, delivering a usable product at each stage</figcaption>
+</figure>
+</div>
+<p>Let someone try the MVP, observe where they struggle, and compare the results with the success metric. Use that feedback to choose the next improvement.</p>
+</section>
+</section>
+<section id="roadmap-and-tasks" class="level2">
+<h2 class="anchored" data-anchor-id="roadmap-and-tasks">Roadmap and Tasks</h2>
+<section id="roadmap" class="level3">
+<h3 class="anchored" data-anchor-id="roadmap">Roadmap</h3>
+<p>Use a roadmap to describe how the product can grow:</p>
+<ol type="1">
+<li>Define the problem, user, and success metric.</li>
+<li>Sketch the user flow and choose the MVP scope.</li>
+<li>Prepare data and prototype the analytical logic.</li>
+<li>Build an interactive prototype that demonstrates the core value.</li>
+<li>Add persistent storage and connect the interface and backend.</li>
+<li>Try the complete flow, collect feedback, and improve it.</li>
+<li>Document setup, usage, and limitations.</li>
+</ol>
+<p>A roadmap describes the intended sequence. Adjust it as you learn from the data, implementation, and user feedback.</p>
+<p>Use the diagram below to discuss dependencies between frontend, backend, and analytical work. Each block represents a piece of functionality, and the arrows show what needs to be ready before the next piece can be completed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/Roadmap_sample.PNG" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>Example product roadmap with dependencies across frontend, backend, and data science work</figcaption>
+</figure>
+</div>
+</section>
+<section id="tasks" class="level3">
+<h3 class="anchored" data-anchor-id="tasks">Tasks</h3>
+<p>Break each step into small tasks with an observable result, such as creating a carousel, recording a click, or displaying a performance chart.</p>
+<p>Track progress with a simple flow:</p>
+<p><span class="math display">\[\text{Backlog} \rightarrow \text{In Progress} \rightarrow \text{Review} \rightarrow \text{Done}\]</span></p>
+<ul>
+<li><strong>Backlog:</strong> describe the change and what successful completion looks like.</li>
+<li><strong>In Progress:</strong> implement a focused change and record any blockers.</li>
+<li><strong>Review:</strong> check the behavior against the task and the user’s needs.</li>
+<li><strong>Done:</strong> the change works and the relevant documentation is updated.</li>
+</ul>
+<p>A task board such as <strong>GitHub Projects</strong> can help organize this work.</p>
+</section>
+</section>
+<section id="data-product-components" class="level2">
+<h2 class="anchored" data-anchor-id="data-product-components">Data Product Components</h2>
+<p>We will cover each component and practice connecting it to the rest of the application.</p>
+<section id="frontend-backend-and-database" class="level3">
+<h3 class="anchored" data-anchor-id="frontend-backend-and-database">Frontend, Backend, and Database</h3>
+<p>These are three parts of the application with different jobs. In the architecture we will build, they work together to turn a user’s action into a useful result.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>In simple terms</th>
+<th>In our carousel product</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Frontend — Streamlit</strong></td>
+<td>The interface people use: pages, buttons, forms, and charts.</td>
+<td>A marketer creates a carousel and opens its analytics page.</td>
+</tr>
+<tr class="even">
+<td><strong>Backend — FastAPI</strong></td>
+<td>The service that receives requests, applies the rules, and returns results.</td>
+<td>It validates carousel settings, runs analytical logic, and prepares analytics results.</td>
+</tr>
+<tr class="odd">
+<td><strong>Database — PostgreSQL</strong></td>
+<td>Organized, lasting storage that the application can read and update.</td>
+<td>It stores carousels, alternatives, clicks, and interaction history.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="how-they-connect" class="level3">
+<h3 class="anchored" data-anchor-id="how-they-connect">How They Connect</h3>
+<p>An <strong>API</strong> is an agreed way for one program to request something from another. For example, the frontend can ask the backend to return the results for a selected carousel.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    accTitle: How the user, frontend, backend, and database connect
+    accDescr: The browser interacts with Streamlit. Streamlit sends requests to FastAPI. FastAPI reads or writes PostgreSQL, and the results return along the same path.
+    U["User&lt;br/&gt;Browser"] &lt;--&gt;|"actions / screens"| F["Frontend&lt;br/&gt;Streamlit"]
+    F &lt;--&gt;|"API requests / results"| B["Backend&lt;br/&gt;FastAPI"]
+    B &lt;--&gt;|"queries / records"| D[("Database&lt;br/&gt;PostgreSQL")]
+    classDef frontend fill:#e7f1ff,stroke:#2563eb,color:#172554;
+    classDef backend fill:#f0eaff,stroke:#7c3aed,color:#3b0764;
+    classDef database fill:#e2f5eb,stroke:#15803d,color:#14532d;
+    class F frontend;
+    class B backend;
+    class D database;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Follow one action: opening the analytics page.</strong></p>
+<ol type="1">
+<li><strong>The user</strong> selects a carousel in the browser.</li>
+<li><strong>The frontend</strong> asks the backend for that carousel’s analytics through the API.</li>
+<li><strong>The backend</strong> asks the database for the relevant interactions and prepares the requested metrics.</li>
+<li><strong>The database</strong> returns the stored records to the backend.</li>
+<li><strong>The backend</strong> returns the results to the frontend.</li>
+<li><strong>The frontend</strong> displays the charts and tables to the user.</li>
+</ol>
+<p>The arrows go both ways because each request has a response. When recording a click, the backend writes a new interaction to the database before returning a result. The browser reaches the stored data through these application services.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Where does Streamlit run?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Where does Streamlit run?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The browser displays the interface, while Streamlit’s Python code runs in a server process. In our design, that Python code calls the separate FastAPI service. We call Streamlit the <strong>frontend service</strong> because it provides the user interface. See <a href="https://docs.streamlit.io/develop/concepts/architecture/architecture">Streamlit’s architecture</a>.</p>
+</div>
+</div>
+</section>
+<section id="where-does-the-data-science-fit" class="level3">
+<h3 class="anchored" data-anchor-id="where-does-the-data-science-fit">Where Does the Data Science Fit?</h3>
+<p>The analytical code turns data into a decision or an insight. For our carousel, it selects alternatives and updates beliefs using click feedback. We will develop this logic in Python and make it available through the backend. The frontend explains the result; the database keeps the history needed to produce it.</p>
+</section>
+<section id="data-preparation-and-processing" class="level3">
+<h3 class="anchored" data-anchor-id="data-preparation-and-processing">Data Preparation and Processing</h3>
+<ul>
+<li>Identify the data needed to solve the problem.</li>
+<li>Collect, generate, clean, and transform data as needed.</li>
+<li>Build a repeatable processing pipeline when the application requires it.</li>
+</ul>
+</section>
+<section id="data-analysis-and-modeling" class="level3">
+<h3 class="anchored" data-anchor-id="data-analysis-and-modeling">Data Analysis and Modeling</h3>
+<ul>
+<li>Explore the data and choose an appropriate analytical method.</li>
+<li>Build and evaluate the analytical logic or model.</li>
+<li>Define performance metrics and explain the results and limitations.</li>
+<li>Make model outputs available to the application and store results when needed.</li>
+</ul>
+</section>
+<section id="database" class="level3">
+<h3 class="anchored" data-anchor-id="database">Database</h3>
+<p>Use <strong>PostgreSQL</strong> to manage the application’s data:</p>
+<ul>
+<li>Design the data structure and tables.</li>
+<li>Store application settings, interactions, and analytical results.</li>
+<li>Create, read, update, and delete records from Python.</li>
+</ul>
+</section>
+<section id="backend" class="level3">
+<h3 class="anchored" data-anchor-id="backend">Backend</h3>
+<p>Use <strong>FastAPI</strong> to expose the operations the product needs:</p>
+<ul>
+<li>Define endpoints around the user’s actions and the business logic.</li>
+<li>Validate inputs and return structured responses.</li>
+<li>Connect the interface to the database and analytical logic.</li>
+<li>Explain and try endpoints through the API documentation.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/FrontvsBack.png" class="img-fluid figure-img"></p>
+<figcaption>Frontend and backend responsibilities in an application</figcaption>
+</figure>
+</div>
+</section>
+<section id="frontend" class="level3">
+<h3 class="anchored" data-anchor-id="frontend">Frontend</h3>
+<p>Use <strong>Streamlit</strong> to build an interface where users can provide input, interact with the analytical logic, and explore results.</p>
+<ul>
+<li><strong>Quick prototyping:</strong> turn Python scripts into interactive applications.</li>
+<li><strong>Interactive controls:</strong> use sliders, forms, and buttons to explore different inputs.</li>
+<li><strong>Visualizations:</strong> present results with charts and tables, using libraries such as Seaborn and Plotly where useful.</li>
+<li><strong>Integration:</strong> connect the interface to the backend and display its responses.</li>
+</ul>
+</section>
+<section id="version-control-and-reproducible-environments" class="level3">
+<h3 class="anchored" data-anchor-id="version-control-and-reproducible-environments">Version Control and Reproducible Environments</h3>
+<p>Use <strong>Git</strong> to track changes and develop features in small steps. Use <strong>Docker</strong> and <strong>Docker Compose</strong> to package services and run them together in a reproducible environment.</p>
+</section>
+<section id="documentation" class="level3">
+<h3 class="anchored" data-anchor-id="documentation">Documentation</h3>
+<p>Use <strong>MkDocs</strong> to explain the product’s purpose, setup, usage, architecture, and limitations so someone else can run and understand it.</p>
+</section>
+</section>
+<section id="microservices-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="microservices-architecture">Microservices Architecture</h2>
+<p>A <strong>service</strong> is a running application that owns a responsibility and exposes a way to use it. A <strong>microservices architecture</strong> divides a product into independently deployable services organized around business capabilities, such as managing experiments or producing recommendations. Services agree on their inputs and outputs through APIs. <a href="https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices">Microsoft’s architecture guide</a> describes these boundaries.</p>
+<section id="start-with-the-architecture-we-are-building" class="level3">
+<h3 class="anchored" data-anchor-id="start-with-the-architecture-we-are-building">Start with the Architecture We Are Building</h3>
+<p>Our first target is a <strong>layered application deployed as several containers</strong>: Streamlit presents the interface, FastAPI owns the product operations, and PostgreSQL stores the records. The bandit calculation can remain a Python module inside FastAPI.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    accTitle: The first service boundaries for the carousel product
+    accDescr: A browser uses the Streamlit service, which calls the FastAPI service. FastAPI contains the bandit logic and accesses PostgreSQL.
+    U["Browser"] &lt;--&gt;|"screens and actions"| F["Frontend service&lt;br/&gt;Streamlit"]
+    subgraph API["Backend service — FastAPI"]
+        R["API routes"] --&gt; L["Product rules&lt;br/&gt;and bandit logic"]
+    end
+    F &lt;--&gt;|"HTTP and JSON"| R
+    L &lt;--&gt;|"SQLAlchemy and SQL"| D[("PostgreSQL")]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Read each box as a responsibility.</strong> Streamlit asks for an operation; FastAPI decides what it means and performs it; PostgreSQL keeps the resulting data. Changing the chart layout can stay within the frontend, while changing a database query belongs in the backend’s data-access code.</p>
+<p>The current Streamlit MVP still keeps its state locally and contains TODOs for API integration. This diagram is the design we are working toward, rather than a claim that every connection is already implemented.</p>
+</section>
+<section id="a-container-and-a-microservice-describe-different-things" class="level3">
+<h3 class="anchored" data-anchor-id="a-container-and-a-microservice-describe-different-things">A Container and a Microservice Describe Different Things</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Term</th>
+<th>What it describes</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Component</strong></td>
+<td>A part of the code or system.</td>
+<td>A Python function that samples bandit alternatives.</td>
+</tr>
+<tr class="even">
+<td><strong>Service</strong></td>
+<td>A separately running application with a defined responsibility.</td>
+<td>The FastAPI application listening on port <code>8000</code>.</td>
+</tr>
+<tr class="odd">
+<td><strong>Container</strong></td>
+<td>The environment in which an application runs.</td>
+<td>A container containing Python, FastAPI, and our backend code.</td>
+</tr>
+<tr class="even">
+<td><strong>Microservice</strong></td>
+<td>A service with a focused business boundary that can be deployed independently.</td>
+<td>A future recommendation service with its own API and data ownership.</td>
+</tr>
+</tbody>
+</table>
+<p>Putting the frontend, API, and database into three containers gives us a useful deployment structure. A larger microservices design also needs clear ownership, compatible API contracts, and independent release decisions.</p>
+</section>
+<section id="when-could-we-split-the-backend-further" class="level3">
+<h3 class="anchored" data-anchor-id="when-could-we-split-the-backend-further">When Could We Split the Backend Further?</h3>
+<p>Suppose recommendation traffic grows while experiment management changes rarely. A possible future design is:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+    accTitle: A possible future microservices design with separate data ownership
+    accDescr: A frontend calls an experiment service and a recommendation service through APIs. Each service owns its own data store, and the recommendation service requests experiment information through the experiment API.
+    F["Frontend"] &lt;--&gt;|"create or inspect experiments"| E["Experiment service"]
+    F &lt;--&gt;|"request a selection"| R["Recommendation service"]
+    E &lt;--&gt;|"owns"| ED[("Experiment data")]
+    R &lt;--&gt;|"owns"| RD[("Recommendation state")]
+    R --&gt;|"request experiment information by API"| E
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Follow the ownership arrows.</strong> Each service controls its data and offers an API to other services. Another service asks for information through that API instead of depending directly on its internal tables. The stores could be separate databases on the same database server; the ownership boundary matters more than the number of machines.</p>
+<p>This is a future design example. It does not require splitting the learning MVP into extra services. See <a href="https://learn.microsoft.com/en-us/dotnet/architecture/microservices/architect-microservice-container-applications/data-sovereignty-per-microservice">microservice data ownership</a>.</p>
+</section>
+<section id="follow-a-request-across-the-boundaries" class="level3">
+<h3 class="anchored" data-anchor-id="follow-a-request-across-the-boundaries">Follow a Request Across the Boundaries</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant U as User
+    participant F as Streamlit
+    participant B as FastAPI
+    participant D as PostgreSQL
+    U-&gt;&gt;F: Create a carousel
+    F-&gt;&gt;B: POST /carousels with JSON settings
+    B-&gt;&gt;B: Validate settings and prepare records
+    B-&gt;&gt;D: INSERT carousel and alternatives
+    D--&gt;&gt;B: Saved records and identifiers
+    B--&gt;&gt;F: HTTP response with JSON
+    F--&gt;&gt;U: Show the created carousel
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Read this diagram from top to bottom.</strong> Each arrow crosses a boundary. The API contract tells the frontend which fields to send and which response to expect. SQLAlchemy helps the backend turn Python objects into database operations.</p>
+</section>
+<section id="what-do-we-gain-and-what-must-we-handle" class="level3">
+<h3 class="anchored" data-anchor-id="what-do-we-gain-and-what-must-we-handle">What Do We Gain, and What Must We Handle?</h3>
+<ul>
+<li><strong>Separate changes:</strong> update the interface while keeping the API contract stable.</li>
+<li><strong>Independent deployment:</strong> replace a service without rebuilding every other service when their contracts remain compatible.</li>
+<li><strong>Focused scaling:</strong> run more instances of a busy service when the deployment supports it.</li>
+<li><strong>Network failures:</strong> a request can time out even when the calling service is healthy; define timeouts and useful error responses.</li>
+<li><strong>Data consistency:</strong> an operation spanning services may need coordination. Retrying a request that creates something can create duplicates unless the API handles repeated requests deliberately.</li>
+</ul>
+<p>For the MVP, use the smallest architecture that delivers the user flow. Add service boundaries when they make responsibilities and deployment easier to manage.</p>
+</section>
+</section>
+<section id="what-is-a-container" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-container">What Is a Container?</h2>
+<p>A <strong>container</strong> runs an application in an isolated environment with the files and libraries it needs. For example, a backend container runs our FastAPI code with Python and the required packages. Containers share their host’s operating-system kernel, which manages processes and hardware resources. <a href="https://docs.docker.com/learn/content/what-is-a-container/">Docker’s container guide</a> explains this model.</p>
+<section id="dockerfile-image-container" class="level3">
+<h3 class="anchored" data-anchor-id="dockerfile-image-container">Dockerfile → Image → Container</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    accTitle: From application code to a running container
+    accDescr: Application code, dependency definitions, and a Dockerfile are used to build an image. Docker starts a container from that image.
+    S["Code + dependencies&lt;br/&gt;+ Dockerfile"] --&gt;|"build"| I["Image&lt;br/&gt;Prepared package"]
+    I --&gt;|"run"| C["Container&lt;br/&gt;Running application"]
+    classDef package fill:#fff1dc,stroke:#c56a13,color:#713f12;
+    class I,C package;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Dockerfile:</strong> the build instructions, such as choosing Python, installing packages, and copying our code.</li>
+<li><strong>Image:</strong> the prepared package used to create a container.</li>
+<li><strong>Container:</strong> an instance of that image running with its own configuration.</li>
+</ul>
+<p><strong>Read the arrows as actions:</strong> we <strong>build an image</strong>, then <strong>run a container</strong> from it. This makes the application environment repeatable on compatible machines. See <a href="https://docs.docker.com/learn/content/what-is-a-container/#what-an-image-is">Docker’s explanation of images and containers</a>.</p>
+</section>
+</section>
+<section id="what-is-a-docker-host" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-docker-host">What Is a Docker Host?</h2>
+<p>The <strong>Docker host</strong> is the physical or virtual machine where Docker Engine runs and manages containers. <strong>Docker Engine</strong> is the software that creates, starts, and stops them. Your computer can provide this environment during development; a server can provide it when the product is deployed. See the <a href="https://docs.docker.com/engine/">Docker Engine overview</a>.</p>
+<section id="the-same-product-running-in-containers" class="level3">
+<h3 class="anchored" data-anchor-id="the-same-product-running-in-containers">The Same Product, Running in Containers</h3>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+    accTitle: Three application containers on one Docker host
+    accDescr: A browser connects to the frontend container on a Docker host. The frontend calls the backend, the backend accesses the database, and database files are stored in a persistent volume. Docker Engine manages the containers.
+    U["User's browser"]
+    subgraph HOST["Docker host — the machine running Docker Engine"]
+        direction TB
+        E["Docker Engine&lt;br/&gt;Manages the containers"]
+        subgraph NET["Application network — lets the services communicate"]
+            direction LR
+            F["Frontend container&lt;br/&gt;Streamlit"] &lt;--&gt;|"API"| B["Backend container&lt;br/&gt;FastAPI + analytical code"]
+            B &lt;--&gt;|"read / write"| D[("Database container&lt;br/&gt;PostgreSQL")]
+        end
+        V[("Volume&lt;br/&gt;Saved database files")]
+        E -.-&gt;|"manages"| F
+        E -.-&gt;|"manages"| B
+        E -.-&gt;|"manages"| D
+        D &lt;--&gt;|"stores data"| V
+    end
+    U &lt;--&gt;|"published frontend port"| F
+    classDef frontend fill:#e7f1ff,stroke:#2563eb,color:#172554;
+    classDef backend fill:#f0eaff,stroke:#7c3aed,color:#3b0764;
+    classDef database fill:#e2f5eb,stroke:#15803d,color:#14532d;
+    classDef docker fill:#fff1dc,stroke:#c56a13,color:#713f12;
+    class F frontend;
+    class B backend;
+    class D,V database;
+    class E docker;
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Read the diagram from the outside in.</strong> The outer box is the host. Inside it, Docker Engine manages three containers. The solid arrows show application communication; the dotted arrows show management by Docker Engine.</p>
+<ul>
+<li><strong>One container per service:</strong> the interface, API, and database each have their own running environment.</li>
+<li><strong>A network connects them:</strong> the frontend can reach the backend, and the backend can reach the database.</li>
+<li><strong>A published port lets the browser in:</strong> for example, a local address such as <code>http://localhost:8501</code> can lead to the Streamlit container when that port is published.</li>
+<li><strong>A volume keeps database files:</strong> the data can survive replacing the database container, as long as the volume is retained. See <a href="https://docs.docker.com/engine/storage/volumes/">Docker volumes</a>.</li>
+</ul>
+<p>On macOS and Windows, Docker Desktop runs Linux containers in a managed Linux virtual environment. The Docker Engine and Linux containers live there, while you use Docker from your normal desktop. See <a href="https://docs.docker.com/desktop/features/networking/">Docker Desktop networking</a>.</p>
+</section>
+<section id="what-does-docker-compose-add" class="level3">
+<h3 class="anchored" data-anchor-id="what-does-docker-compose-add">What Does Docker Compose Add?</h3>
+<p><strong>Docker Compose</strong> describes the services, their connections, and their storage in one configuration file. It lets us start the product’s containers together. Follow the <a href="../content/02_docker.html">Docker tutorial</a> to build this setup; the <a href="https://docs.docker.com/compose/intro/compose-application-model/">official Compose overview</a> explains the same service, network, and volume concepts.</p>
+</section>
+<section id="build-toward-this-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="build-toward-this-architecture">Build Toward This Architecture</h3>
+<p>Start with a usable Streamlit MVP, develop the analytical logic, add persistent storage and API operations, then connect the services. Package the services as containers and run them together. At each step, check that the original user flow still works.</p>
+</section>
+</section>
+<section id="architecture-reference" class="level2">
+<h2 class="anchored" data-anchor-id="architecture-reference">Architecture Reference</h2>
+<section id="data-flow" class="level3">
+<h3 class="anchored" data-anchor-id="data-flow">Data Flow</h3>
+<p>The components work together to move data through the application and make results available to the user.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/schema.jpeg" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>Data product schema connecting the API, database, model, and data preparation</figcaption>
+</figure>
+</div>
+</section>
+<section id="example-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="example-architecture">Example Architecture</h3>
+<p>This architecture shows how the components can fit together as the application grows. An early MVP can start with fewer components; we will explore the full architecture through the tutorials.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../img/docker_6.jpg" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>Example container architecture connecting the database, data processing, model, API, and Streamlit interface</figcaption>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="bayesian-carousel-bandits" class="level1">
+<h1>Bayesian Carousel Bandits</h1>
+<p>The following case study applies the product development process to a Marketing Analytics application.</p>
+<p><a href="https://carousel-mvp.streamlit.app">Live App</a></p>
+<section id="product-summary" class="level2">
+<h2 class="anchored" data-anchor-id="product-summary">Product Summary</h2>
+<p>This <strong>Bayesian Carousel Optimization</strong> application is a guided example of building a <strong>Marketing Analytics data product</strong>.</p>
+<p>The product simulates a real-world marketing problem where a team has multiple creative alternatives, offers, or content items (bandits), but can only show a limited number of them in a visible carousel area at a time.</p>
+<p>Instead of randomly choosing which alternatives to display, the system uses <strong>Bayesian learning</strong> and <strong>Thompson Sampling</strong> to adaptively prioritize the alternatives that appear to perform better based on observed user clicks.</p>
+<p>The MVP is implemented as a <strong>multi-page Streamlit app</strong> and is designed as the frontend prototype of a larger product that can later be integrated with a backend API, database, and deployment pipeline.</p>
+</section>
+<section id="problem-definition" class="level2">
+<h2 class="anchored" data-anchor-id="problem-definition">Problem Definition</h2>
+<section id="business-problem" class="level3">
+<h3 class="anchored" data-anchor-id="business-problem">Business Problem</h3>
+<p><strong>Marketing teams often need to choose among multiple alternatives such as:</strong></p>
+<ul>
+<li>promotional banners,</li>
+<li>campaign creatives,</li>
+<li>product cards,</li>
+<li>or recommendation tiles.</li>
+</ul>
+<p>However, only a limited number of alternatives can be shown to users at once in a carousel or visible content area.</p>
+<p><strong>The key challenge is:</strong></p>
+<blockquote class="blockquote">
+<p><strong>How can we decide which alternatives to show in each round so that we learn from user behavior and gradually improve click performance over time?</strong></p>
+</blockquote>
+<p>A static rule-based system or random selection is inefficient because:</p>
+<ul>
+<li>it may keep showing underperforming alternatives,</li>
+<li>it does not learn from feedback,</li>
+<li>and it does not balance experimentation with optimization.</li>
+</ul>
+</section>
+<section id="specific-problem-statement" class="level3">
+<h3 class="anchored" data-anchor-id="specific-problem-statement">Specific Problem Statement</h3>
+<p><strong>We want to build a product that:</strong></p>
+<ul>
+<li>creates carousel projects with a configurable number of total alternatives,</li>
+<li>chooses only a subset of alternatives to display in the visible area,</li>
+<li>collects interaction feedback in the form of clicks / no-clicks,</li>
+<li>updates beliefs about each alternative after every round,</li>
+<li>and visualizes which alternatives are performing best over time.</li>
+</ul>
+<p>This is modeled as a <strong>multi-armed bandit problem</strong> with:</p>
+<ul>
+<li><strong>Bernoulli rewards</strong></li>
+<li><strong>Beta priors/posteriors</strong></li>
+<li><strong>Thompson Sampling</strong> for selection</li>
+</ul>
+</section>
+</section>
+<section id="proposed-solution" class="level2">
+<h2 class="anchored" data-anchor-id="proposed-solution">Proposed Solution</h2>
+<section id="core-idea" class="level3">
+<h3 class="anchored" data-anchor-id="core-idea">Core Idea</h3>
+<p>Each alternative in a carousel is treated as a <strong>bandit arm</strong>.</p>
+<p><strong>For every alternative, the system keeps:</strong></p>
+<ul>
+<li>a prior belief about its click-through rate,</li>
+<li>updates that belief after each user interaction,</li>
+<li>and samples from the posterior to decide which alternatives should be displayed next.</li>
+</ul>
+<p>The visible area might show, for example:</p>
+<blockquote class="blockquote">
+<p><strong>4 visible alternatives</strong> out of <strong>10 total alternatives</strong></p>
+</blockquote>
+<p><img src="../img/product/page_1.png" class="img-fluid"></p>
+<p><strong>At every round:</strong></p>
+<ol type="1">
+<li>the system samples a score for each alternative from its Beta posterior,</li>
+<li>selects the top alternatives according to Thompson Sampling,</li>
+<li>displays them in the carousel,</li>
+<li>observes a user click or no-click outcome,</li>
+<li>updates the posteriors,</li>
+<li>and repeats the process.</li>
+</ol>
+<p><strong>This allows the system to balance:</strong></p>
+<ul>
+<li><strong>exploration</strong> of uncertain alternatives,</li>
+<li><strong>exploitation</strong> of alternatives that already look strong.</li>
+</ul>
+</section>
+</section>
+<section id="current-mvp" class="level2">
+<h2 class="anchored" data-anchor-id="current-mvp">Current MVP</h2>
+<section id="what-we-have-built" class="level3">
+<h3 class="anchored" data-anchor-id="what-we-have-built">What We Have Built</h3>
+<p>The current MVP is a <strong>Streamlit application with 3 pages</strong>:</p>
+<section id="page-1-create-carousels" class="level4">
+<h4 class="anchored" data-anchor-id="page-1-create-carousels">Page 1 | Create Carousels</h4>
+<p><strong>This page allows the user (<a href="https://carousel-mvp.streamlit.app">Page 1 URL</a>):</strong></p>
+<ul>
+<li>create a new carousel project,</li>
+<li>define the total number of alternatives,</li>
+<li>define the visible area size,</li>
+<li>list all available carousel projects,</li>
+<li>inspect the alternatives of a selected carousel,</li>
+<li>reset a selected carousel.</li>
+</ul>
+<p><img src="../img/product/page_1.png" class="img-fluid"></p>
+</section>
+<section id="page-2-interaction" class="level4">
+<h4 class="anchored" data-anchor-id="page-2-interaction">Page 2 | Interaction</h4>
+<p><strong>This page is where the live bandit interaction happens (<a href="https://carousel-mvp.streamlit.app/Interaction">Page 2 URL</a>).</strong></p>
+<p><strong>The user can:</strong></p>
+<ul>
+<li>choose a carousel,</li>
+<li>see the currently selected visible alternatives,</li>
+<li>click one of the displayed alternatives,</li>
+<li>move to the next round with no click,</li>
+<li>or resample without updating.</li>
+</ul>
+<p><strong>For every round, the app updates:</strong></p>
+<ul>
+<li>impressions,</li>
+<li>clicks,</li>
+<li>alpha / beta values,</li>
+<li>posterior mean,</li>
+<li>and empirical CTR.</li>
+</ul>
+<p><img src="../img/product/page_2.png" class="img-fluid"></p>
+</section>
+<section id="page-3-analytics" class="level4">
+<h4 class="anchored" data-anchor-id="page-3-analytics">Page 3 | Analytics</h4>
+<p><strong>This page summarizes performance for each carousel project (<a href="https://carousel-mvp.streamlit.app/Analytics">Page 3 URL</a>).</strong></p>
+<p><strong>It currently includes:</strong></p>
+<ul>
+<li>overall carousel project listing,</li>
+<li>total impressions,</li>
+<li>total clicks,</li>
+<li>average reward,</li>
+<li>champion bandit identification,</li>
+<li>posterior mean comparison,</li>
+<li>click comparison,</li>
+<li>Beta posterior distribution visualization,</li>
+<li>detailed results table,</li>
+<li>cumulative reward over time.</li>
+</ul>
+<p><img src="../img/product/page_3_1.png" class="img-fluid"></p>
+<p><img src="../img/product/page_3_2.png" class="img-fluid"></p>
+</section>
+</section>
+</section>
+<section id="methodology" class="level2">
+<h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
+<section id="reward-structure" class="level3">
+<h3 class="anchored" data-anchor-id="reward-structure">Reward Structure</h3>
+<p>We use a <strong>Bernoulli reward</strong>:</p>
+<ul>
+<li><code>1</code> = user clicked one of the displayed alternatives</li>
+<li><code>0</code> = no click for a displayed alternative</li>
+</ul>
+</section>
+<section id="bayesian-model" class="level3">
+<h3 class="anchored" data-anchor-id="bayesian-model">Bayesian Model</h3>
+<p>For each alternative, we model click probability using a <strong>Beta-Bernoulli setup</strong>:</p>
+<ul>
+<li><strong>Prior:</strong> <code>Beta(alpha, beta)</code></li>
+<li><strong>Outcome:</strong> Bernoulli click / no-click</li>
+<li><strong>Posterior update:</strong>
+<ul>
+<li>clicked alternative: <code>alpha += 1</code></li>
+<li>displayed but unclicked alternatives: <code>beta += 1</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="selection-strategy" class="level3">
+<h3 class="anchored" data-anchor-id="selection-strategy">Selection Strategy</h3>
+<p>We use <strong>Thompson Sampling</strong>:</p>
+<ul>
+<li>draw one sample from each alternative’s posterior,</li>
+<li>rank alternatives by the sampled values,</li>
+<li>display the top <code>k</code> alternatives where <code>k = visible_count</code>.</li>
+</ul>
+<hr>
+</section>
+<section id="the-value" class="level3">
+<h3 class="anchored" data-anchor-id="the-value">The Value</h3>
+<p>This product is a strong fit for Marketing Analytics because it demonstrates:</p>
+<ul>
+<li>experimentation under uncertainty,</li>
+<li>user behavior learning,</li>
+<li>adaptive optimization,</li>
+<li>measurable reward improvement,</li>
+<li>and a clear connection between analytics and product decision-making.</li>
+</ul>
+<blockquote class="blockquote">
+<p>Instead of simply reporting past A/B test results, the system actively decides what to show next based on observed performance.</p>
+</blockquote>
+</section>
+</section>
+<section id="architecture" class="level2">
+<h2 class="anchored" data-anchor-id="architecture">Architecture</h2>
+<p><strong>The final product can evolve into:</strong></p>
+<ul>
+<li><strong>Frontend:</strong> Streamlit</li>
+<li><strong>Backend:</strong> FastAPI</li>
+<li><strong>Database:</strong> PostgreSQL</li>
+<li><strong>Analytics service:</strong> Python-based bandit engine</li>
+<li><strong>Deployment:</strong> Docker / containerized services</li>
+</ul>
+</section>
+<section id="steps-to-achieve-the-full-product" class="level2">
+<h2 class="anchored" data-anchor-id="steps-to-achieve-the-full-product">Steps to Achieve the Full Product</h2>
+<section id="step-1-finalize-the-mvp-logic" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-finalize-the-mvp-logic">Step 1 | Finalize the MVP logic</h3>
+<ul>
+<li>validate carousel creation flow,</li>
+<li>validate selection and update rules,</li>
+<li>confirm reward assumptions,</li>
+<li>confirm analytics outputs.</li>
+</ul>
+</section>
+<section id="step-2-separate-frontend-from-logic" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-separate-frontend-from-logic">Step 2 | Separate frontend from logic</h3>
+<ul>
+<li>move bandit logic from Streamlit session state into reusable backend functions,</li>
+<li>define clear API contracts,</li>
+<li>keep Streamlit as the UI layer only,</li>
+<li>learn basic requests with <code>FastAPI</code></li>
+</ul>
+</section>
+<section id="step-3-build-backend-endpoints" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-build-backend-endpoints">Step 3 | Build backend endpoints</h3>
+<p><strong>Planned API functionality:</strong></p>
+<ul>
+<li>create carousel,</li>
+<li>list carousels,</li>
+<li>fetch selected visible alternatives,</li>
+<li>submit click / no-click feedback,</li>
+<li>get analytics for a carousel,</li>
+<li>reset or delete a carousel.</li>
+</ul>
+</section>
+<section id="step-4-add-database-persistence" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-add-database-persistence">Step 4 | Add database persistence</h3>
+<p><strong>Create PostgreSQL tables for:</strong></p>
+<ul>
+<li>carousel projects,</li>
+<li>alternatives,</li>
+<li>interaction history,</li>
+<li>posterior parameters,</li>
+<li>analytics summaries.</li>
+</ul>
+</section>
+<section id="step-5-connect-frontend-to-backend" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-connect-frontend-to-backend">Step 5 | Connect frontend to backend</h3>
+<p><strong>Update the Streamlit pages so they:</strong></p>
+<ul>
+<li>fetch data from API,</li>
+<li>submit interaction events,</li>
+<li>display live analytics from the database.</li>
+</ul>
+</section>
+<section id="step-6-improve-analytics" class="level3">
+<h3 class="anchored" data-anchor-id="step-6-improve-analytics">Step 6 | Improve analytics</h3>
+<p><strong>Extend the analytics layer with:</strong></p>
+<ul>
+<li>richer reward history,</li>
+<li>posterior distribution comparison,</li>
+<li>best-bandit explanation,</li>
+<li>possible regret or lift analysis.</li>
+</ul>
+</section>
+<section id="step-7-polish-product-ux" class="level3">
+<h3 class="anchored" data-anchor-id="step-7-polish-product-ux">Step 7 | Polish product UX</h3>
+<ul>
+<li>improve visual hierarchy,</li>
+<li>improve labeling and explanations,</li>
+<li>add screenshots and deployment URL,</li>
+<li>add project documentation.</li>
+</ul>
+</section>
+<section id="step-8-containerize-and-deploy" class="level3">
+<h3 class="anchored" data-anchor-id="step-8-containerize-and-deploy">Step 8 | Containerize and deploy</h3>
+<ul>
+<li>add Docker support,</li>
+<li>configure environment variables,</li>
+<li>deploy the frontend,</li>
+<li>connect deployed frontend to backend and DB.</li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

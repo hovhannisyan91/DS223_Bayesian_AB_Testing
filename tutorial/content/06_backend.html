@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Intro to FastAPI – DS223 Data Products</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../img/auaicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d166b450ba5a8e9f7a0ab969bf6592c1.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-c0901e6b964c9030d3ea5df25da8f7b7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ef73a86292608347c76750a25777438b.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../img/auaicon.ico" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">DS223 Data Products</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../content/01_problem_definition.html"> 
+<span class="menu-text">Product</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/02_docker.html"> 
+<span class="menu-text">Docker</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/03_git.html"> 
+<span class="menu-text">Git</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/04_database.html"> 
+<span class="menu-text">Database | PostgreSQL</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/05_frontend.html"> 
+<span class="menu-text">Frontend | Streamlit</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../content/06_backend.html" aria-current="page"> 
+<span class="menu-text">Backend | FastAPI</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../content/07_documentation.html"> 
+<span class="menu-text">Documentation | MKdocs</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hovhannisyan91"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Intro to FastAPI</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#fastapi-backend" id="toc-fastapi-backend" class="nav-link active" data-scroll-target="#fastapi-backend">FastAPI Backend</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#what-is-an-http-request" id="toc-what-is-an-http-request" class="nav-link" data-scroll-target="#what-is-an-http-request">What Is an HTTP Request?</a>
+  <ul class="collapse">
+  <li><a href="#read-a-request-one-part-at-a-time" id="toc-read-a-request-one-part-at-a-time" class="nav-link" data-scroll-target="#read-a-request-one-part-at-a-time">Read a Request One Part at a Time</a></li>
+  <li><a href="#http-methods-what-kind-of-action" id="toc-http-methods-what-kind-of-action" class="nav-link" data-scroll-target="#http-methods-what-kind-of-action">HTTP Methods: What Kind of Action?</a></li>
+  <li><a href="#path-query-and-body-where-does-an-input-go" id="toc-path-query-and-body-where-does-an-input-go" class="nav-link" data-scroll-target="#path-query-and-body-where-does-an-input-go">Path, Query, and Body: Where Does an Input Go?</a></li>
+  <li><a href="#status-codes-did-it-work" id="toc-status-codes-did-it-work" class="nav-link" data-scroll-target="#status-codes-did-it-work">Status Codes: Did It Work?</a></li>
+  </ul></li>
+  <li><a href="#why-fastapi-for-this-project" id="toc-why-fastapi-for-this-project" class="nav-link" data-scroll-target="#why-fastapi-for-this-project">Why FastAPI for This Project</a></li>
+  <li><a href="#what-this-prototype-backend-does" id="toc-what-this-prototype-backend-does" class="nav-link" data-scroll-target="#what-this-prototype-backend-does">What This Prototype Backend Does</a></li>
+  <li><a href="#planned-api-endpoints" id="toc-planned-api-endpoints" class="nav-link" data-scroll-target="#planned-api-endpoints">Planned API Endpoints</a>
+  <ul class="collapse">
+  <li><a href="#general" id="toc-general" class="nav-link" data-scroll-target="#general">General</a></li>
+  <li><a href="#carousel-management" id="toc-carousel-management" class="nav-link" data-scroll-target="#carousel-management">Carousel Management</a></li>
+  <li><a href="#carousel-interaction" id="toc-carousel-interaction" class="nav-link" data-scroll-target="#carousel-interaction">Carousel Interaction</a></li>
+  <li><a href="#analytics" id="toc-analytics" class="nav-link" data-scroll-target="#analytics">Analytics</a></li>
+  </ul></li>
+  <li><a href="#why-a-single-file-first" id="toc-why-a-single-file-first" class="nav-link" data-scroll-target="#why-a-single-file-first">Why a Single File First</a></li>
+  <li><a href="#request-and-response-design" id="toc-request-and-response-design" class="nav-link" data-scroll-target="#request-and-response-design">Request and Response Design</a></li>
+  <li><a href="#full-dummy-backend-in-one-file" id="toc-full-dummy-backend-in-one-file" class="nav-link" data-scroll-target="#full-dummy-backend-in-one-file">Full Dummy Backend in One File</a></li>
+  <li><a href="#how-to-run-the-prototype-backend" id="toc-how-to-run-the-prototype-backend" class="nav-link" data-scroll-target="#how-to-run-the-prototype-backend">How to Run the Prototype Backend</a></li>
+  <li><a href="#try-requests-and-read-the-responses" id="toc-try-requests-and-read-the-responses" class="nav-link" data-scroll-target="#try-requests-and-read-the-responses">Try Requests and Read the Responses</a>
+  <ul class="collapse">
+  <li><a href="#get-read-without-creating-a-carousel" id="toc-get-read-without-creating-a-carousel" class="nav-link" data-scroll-target="#get-read-without-creating-a-carousel">GET: Read Without Creating a Carousel</a></li>
+  <li><a href="#post-send-a-json-body" id="toc-post-send-a-json-body" class="nav-link" data-scroll-target="#post-send-a-json-body">POST: Send a JSON Body</a></li>
+  <li><a href="#use-the-created-identifier-in-a-path" id="toc-use-the-created-identifier-in-a-path" class="nav-link" data-scroll-target="#use-the-created-identifier-in-a-path">Use the Created Identifier in a Path</a></li>
+  <li><a href="#errors-are-responses-too" id="toc-errors-are-responses-too" class="nav-link" data-scroll-target="#errors-are-responses-too">Errors Are Responses Too</a></li>
+  <li><a href="#delete-remove-a-practice-resource" id="toc-delete-remove-a-practice-resource" class="nav-link" data-scroll-target="#delete-remove-a-practice-resource">DELETE: Remove a Practice Resource</a></li>
+  <li><a href="#optional-exercise-add-a-query-parameter" id="toc-optional-exercise-add-a-query-parameter" class="nav-link" data-scroll-target="#optional-exercise-add-a-query-parameter">Optional Exercise: Add a Query Parameter</a></li>
+  <li><a href="#optional-exercise-add-a-patch-request" id="toc-optional-exercise-add-a-patch-request" class="nav-link" data-scroll-target="#optional-exercise-add-a-patch-request">Optional Exercise: Add a PATCH Request</a></li>
+  <li><a href="#put-in-the-repository-backend" id="toc-put-in-the-repository-backend" class="nav-link" data-scroll-target="#put-in-the-repository-backend">PUT in the Repository Backend</a></li>
+  </ul></li>
+  <li><a href="#make-the-same-requests-from-python" id="toc-make-the-same-requests-from-python" class="nav-link" data-scroll-target="#make-the-same-requests-from-python">Make the Same Requests from Python</a></li>
+  <li><a href="#how-the-frontend-will-use-these-requests-later" id="toc-how-the-frontend-will-use-these-requests-later" class="nav-link" data-scroll-target="#how-the-frontend-will-use-these-requests-later">How the Frontend Will Use These Requests Later</a></li>
+  <li><a href="#example-backend-flow" id="toc-example-backend-flow" class="nav-link" data-scroll-target="#example-backend-flow">Example Backend Flow</a></li>
+  <li><a href="#why-this-prototype-matters" id="toc-why-this-prototype-matters" class="nav-link" data-scroll-target="#why-this-prototype-matters">Why This Prototype Matters</a></li>
+  <li><a href="#later-evolution" id="toc-later-evolution" class="nav-link" data-scroll-target="#later-evolution">Later Evolution</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Intro to FastAPI</h1>
+<p class="subtitle lead">HTTP Requests, Methods, Validation, and FastAPI</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">FastAPI</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">SQL</div>
+    <div class="quarto-category">PostgreSQL</div>
+    <div class="quarto-category">Backend Development</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="fastapi-backend" class="level2">
+<h2 class="anchored" data-anchor-id="fastapi-backend">FastAPI Backend</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="Which backend are we using?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Which backend are we using?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This page starts with HTTP concepts, then builds a <strong>single-file, in-memory practice API</strong>. The repository also contains a database-connected API under <code>app/backend/</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Detail</th>
+<th>Practice prototype on this page</th>
+<th>Repository backend</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Carousel identifier in JSON</td>
+<td>Short string under <code>carousel_id</code></td>
+<td>Full UUID under <code>id</code></td>
+</tr>
+<tr class="even">
+<td>Storage</td>
+<td>Python dictionaries; restart clears them</td>
+<td>PostgreSQL through SQLAlchemy</td>
+</tr>
+<tr class="odd">
+<td>Record feedback</td>
+<td><code>POST /carousels/{carousel_id}/feedback</code></td>
+<td><code>POST /interactions</code></td>
+</tr>
+<tr class="even">
+<td>Reset a carousel</td>
+<td><code>POST /carousels/{carousel_id}/reset</code></td>
+<td><code>PUT /carousels/{carousel_id}/reset</code></td>
+</tr>
+<tr class="odd">
+<td>Update a carousel</td>
+<td>No update route in the base prototype</td>
+<td><code>PUT /carousels/{carousel_id}</code></td>
+</tr>
+</tbody>
+</table>
+<p>Use each example with its named version. The <a href="../content/04_database.html#the-products-actual-sqlalchemy-models">database lesson</a> explains the repository’s actual persistence models.</p>
+</div>
+</div>
+<p>At this stage, the backend is introduced as a <strong>single-file FastAPI prototype</strong>.</p>
+<p>The goal is not yet full production integration. Instead, the goal is to define:</p>
+<ul>
+<li>the API idea,</li>
+<li>the request and response structure,</li>
+<li>the main endpoints,</li>
+<li>and how the frontend will later communicate with the backend.</li>
+</ul>
+<p>This first version uses <strong>dummy in-memory storage</strong>, which means the API works without PostgreSQL. Later, the same structure can evolve into a full backend connected to the database.</p>
+<hr>
+</section>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>FastAPI is a modern Python framework for building APIs.</p>
+<p>It is a strong choice for this project because it provides:</p>
+<ul>
+<li>simple endpoint creation,</li>
+<li>automatic validation with Pydantic,</li>
+<li>automatic API documentation,</li>
+<li>fast development for prototypes,</li>
+<li>and a clean path from MVP to production.</li>
+</ul>
+<p>For our project, FastAPI will eventually sit between:</p>
+<ul>
+<li>the Streamlit frontend,</li>
+<li>and the PostgreSQL database.</li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Streamlit Frontend] --&gt; B[FastAPI Backend]
+    B --&gt; C[PostgreSQL Database]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="what-is-an-http-request" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-an-http-request">What Is an HTTP Request?</h2>
+<p>A <strong>request</strong> is a message asking a server to do something. A <strong>response</strong> tells the caller what happened and can include data. An endpoint is identified by both its <strong>method</strong> and its <strong>path</strong>: <code>GET /carousels</code> and <code>POST /carousels</code> perform different operations at the same path.</p>
+<section id="read-a-request-one-part-at-a-time" class="level3">
+<h3 class="anchored" data-anchor-id="read-a-request-one-part-at-a-time">Read a Request One Part at a Time</h3>
+<pre class="http"><code>POST /carousels HTTP/1.1
+Host: localhost:8000
+Content-Type: application/json
+
+{"name":"Summer offers","total_alternatives":4,"visible_count":2}</code></pre>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Part</th>
+<th>What it tells the server</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Method: <code>POST</code></td>
+<td>Process the submitted data; here, create a carousel.</td>
+</tr>
+<tr class="even">
+<td>Path: <code>/carousels</code></td>
+<td>Which resource or operation is being requested.</td>
+</tr>
+<tr class="odd">
+<td>Headers</td>
+<td>Extra information, such as the body’s format.</td>
+</tr>
+<tr class="even">
+<td>Body</td>
+<td>The input data; this example uses JSON.</td>
+</tr>
+</tbody>
+</table>
+<p>The blank line separates headers from the body. JSON is a data format; it is different from Python syntax, so a missing value is written <code>null</code> in JSON and <code>None</code> in Python.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    accTitle: The HTTP request and response cycle in FastAPI
+    accDescr: A client sends a method, path, headers, and optional body. FastAPI matches the route and validates the input. Invalid input receives 422; valid input reaches the function, which returns a status and JSON or a business error.
+    C["Client&lt;br/&gt;Streamlit, curl, or Python"] --&gt; R["HTTP request&lt;br/&gt;method + path + headers + body"]
+    R --&gt; V["FastAPI matches route&lt;br/&gt;and validates input"]
+    V --&gt;|"invalid fields"| E["422 response&lt;br/&gt;Validation details"]
+    V --&gt;|"valid input"| F["Endpoint function&lt;br/&gt;Apply product rules"]
+    F --&gt;|"successful operation"| S["Success status + JSON result"]
+    F --&gt;|"missing carousel or invalid action"| B["404 or 400 response&lt;br/&gt;Useful explanation"]
+    S --&gt; C
+    E --&gt; C
+    B --&gt; C
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Follow the success and error paths.</strong> FastAPI can reject a value of the wrong type before the function runs. The function still needs to enforce product rules, such as keeping <code>visible_count</code> within the total number of alternatives. See <a href="https://fastapi.tiangolo.com/tutorial/body/">request-body validation</a>.</p>
+</section>
+<section id="http-methods-what-kind-of-action" class="level3">
+<h3 class="anchored" data-anchor-id="http-methods-what-kind-of-action">HTTP Methods: What Kind of Action?</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Usual meaning</th>
+<th>Carousel example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>GET</code></td>
+<td>Read a representation.</td>
+<td>List carousels or fetch analytics.</td>
+</tr>
+<tr class="even">
+<td><code>POST</code></td>
+<td>Submit data for processing, often creating a new resource.</td>
+<td>Create a carousel or record feedback.</td>
+</tr>
+<tr class="odd">
+<td><code>PUT</code></td>
+<td>Replace the state of a known resource.</td>
+<td>A full settings update at a known carousel URL.</td>
+</tr>
+<tr class="even">
+<td><code>PATCH</code></td>
+<td>Apply a partial change.</td>
+<td>Rename a carousel while keeping its other settings.</td>
+</tr>
+<tr class="odd">
+<td><code>DELETE</code></td>
+<td>Remove the resource identified by the URL.</td>
+<td>Delete a practice carousel.</td>
+</tr>
+<tr class="even">
+<td><code>HEAD</code></td>
+<td>Ask for response headers without a response body.</td>
+<td>Check response metadata when a route supports it.</td>
+</tr>
+<tr class="odd">
+<td><code>OPTIONS</code></td>
+<td>Ask about communication options.</td>
+<td>A browser’s CORS preflight request.</td>
+</tr>
+</tbody>
+</table>
+<p><code>GET</code> is intended for reads. <code>PUT</code> and <code>DELETE</code> are idempotent: repeating the same request should have the same intended final effect, though the returned status can differ. <code>POST</code> does not promise this property, so blindly retrying a create request can produce duplicates. See <a href="https://www.rfc-editor.org/rfc/rfc9110.html#section-9">HTTP semantics</a> and <a href="https://www.rfc-editor.org/rfc/rfc5789.html">PATCH semantics</a>.</p>
+<p>The current repository’s <code>PUT /carousels/{carousel_id}</code> accepts a partial update model; <code>PATCH</code> would describe that behavior more precisely. This tutorial explains the convention while identifying the implementation students will actually see. The base practice prototype has no <code>PUT</code> or <code>PATCH</code> route; an unsupported method on an existing path returns <code>405</code>.</p>
+</section>
+<section id="path-query-and-body-where-does-an-input-go" class="level3">
+<h3 class="anchored" data-anchor-id="path-query-and-body-where-does-an-input-go">Path, Query, and Body: Where Does an Input Go?</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input location</th>
+<th>Example</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Path parameter</td>
+<td><code>/carousels/abc123</code></td>
+<td>Identify the particular carousel.</td>
+</tr>
+<tr class="even">
+<td>Query parameter</td>
+<td><code>/examples/alternatives?min_clicks=2</code></td>
+<td>Filter or modify a read operation. This optional exercise is defined below.</td>
+</tr>
+<tr class="odd">
+<td>JSON body</td>
+<td><code>{"name":"Summer offers", ...}</code></td>
+<td>Supply structured input for a create or update operation.</td>
+</tr>
+</tbody>
+</table>
+<p>FastAPI reads a named path value from the URL, ordinary typed function parameters from the query string, and Pydantic model parameters from the JSON body. See <a href="https://fastapi.tiangolo.com/tutorial/path-params/">path parameters</a> and <a href="https://fastapi.tiangolo.com/tutorial/query-params/">query parameters</a>.</p>
+</section>
+<section id="status-codes-did-it-work" class="level3">
+<h3 class="anchored" data-anchor-id="status-codes-did-it-work">Status Codes: Did It Work?</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Status</th>
+<th>What students should read from it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>200 OK</code></td>
+<td>The request succeeded. Both our prototype’s and repository’s create routes currently use this default.</td>
+</tr>
+<tr class="even">
+<td><code>201 Created</code></td>
+<td>A conventional create response when explicitly configured with <code>status_code=201</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>204 No Content</code></td>
+<td>Success with no response body, when the endpoint is designed that way.</td>
+</tr>
+<tr class="even">
+<td><code>400 Bad Request</code></td>
+<td>The prototype rejected a product rule, such as displaying more alternatives than exist.</td>
+</tr>
+<tr class="odd">
+<td><code>404 Not Found</code></td>
+<td>The requested carousel does not exist.</td>
+</tr>
+<tr class="even">
+<td><code>405 Method Not Allowed</code></td>
+<td>The path exists but does not support that method.</td>
+</tr>
+<tr class="odd">
+<td><code>422 Unprocessable Content</code></td>
+<td>FastAPI could not validate the input.</td>
+</tr>
+<tr class="even">
+<td><code>500 Internal Server Error</code></td>
+<td>The server encountered an unhandled error.</td>
+</tr>
+</tbody>
+</table>
+<p>A successful response has a status, headers, and often a JSON body. In FastAPI, return a dictionary or response model and configure a different status when needed. See <a href="https://fastapi.tiangolo.com/tutorial/response-status-code/">response status codes</a>.</p>
+</section>
+</section>
+<section id="why-fastapi-for-this-project" class="level2">
+<h2 class="anchored" data-anchor-id="why-fastapi-for-this-project">Why FastAPI for This Project</h2>
+<p>FastAPI is useful here because the product needs structured communication between frontend and backend.</p>
+<p>The frontend will later need to send requests such as:</p>
+<ul>
+<li>create a carousel,</li>
+<li>fetch available carousels,</li>
+<li>fetch the current visible alternatives,</li>
+<li>submit click or no-click feedback,</li>
+<li>request analytics for a carousel,</li>
+<li>reset or delete a project.</li>
+</ul>
+<p>Instead of keeping this logic only inside Streamlit, FastAPI allows us to turn the product into a real service.</p>
+<hr>
+</section>
+<section id="what-this-prototype-backend-does" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-prototype-backend-does">What This Prototype Backend Does</h2>
+<p>This first backend version is intentionally simple.</p>
+<p>It includes:</p>
+<ul>
+<li>one file only,</li>
+<li>all routes in one place,</li>
+<li>dummy in-memory storage,</li>
+<li>request and response models,</li>
+<li>and placeholder analytics logic.</li>
+</ul>
+<p>This makes it easier to understand the API before splitting the project into:</p>
+<ul>
+<li>routers,</li>
+<li>services,</li>
+<li>schemas,</li>
+<li>and database layers.</li>
+</ul>
+<hr>
+</section>
+<section id="planned-api-endpoints" class="level2">
+<h2 class="anchored" data-anchor-id="planned-api-endpoints">Planned API Endpoints</h2>
+<p>The prototype backend includes the following requests.</p>
+<section id="general" class="level3">
+<h3 class="anchored" data-anchor-id="general">General</h3>
+<ul>
+<li><code>GET /</code></li>
+<li><code>GET /health</code></li>
+</ul>
+</section>
+<section id="carousel-management" class="level3">
+<h3 class="anchored" data-anchor-id="carousel-management">Carousel Management</h3>
+<ul>
+<li><code>GET /carousels</code></li>
+<li><code>POST /carousels</code></li>
+<li><code>GET /carousels/{carousel_id}</code></li>
+<li><code>DELETE /carousels/{carousel_id}</code></li>
+<li><code>POST /carousels/{carousel_id}/reset</code></li>
+</ul>
+</section>
+<section id="carousel-interaction" class="level3">
+<h3 class="anchored" data-anchor-id="carousel-interaction">Carousel Interaction</h3>
+<ul>
+<li><code>GET /carousels/{carousel_id}/display</code></li>
+<li><code>POST /carousels/{carousel_id}/resample</code></li>
+<li><code>POST /carousels/{carousel_id}/feedback</code></li>
+<li><code>GET /carousels/{carousel_id}/events</code></li>
+</ul>
+</section>
+<section id="analytics" class="level3">
+<h3 class="anchored" data-anchor-id="analytics">Analytics</h3>
+<ul>
+<li><code>GET /carousels/{carousel_id}/analytics</code></li>
+</ul>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A[Create Carousel] --&gt; B[Get Carousel]
+    B --&gt; C[Display Alternatives]
+    C --&gt; D[Submit Feedback]
+    D --&gt; E[Update Event History]
+    E --&gt; F[Request Analytics]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="why-a-single-file-first" class="level2">
+<h2 class="anchored" data-anchor-id="why-a-single-file-first">Why a Single File First</h2>
+<p>At the prototype stage, keeping everything in one file is useful because it lets us focus on:</p>
+<ul>
+<li>the request flow,</li>
+<li>the endpoint names,</li>
+<li>the payload design,</li>
+<li>and the frontend-backend interaction.</li>
+</ul>
+<p>Later, the same backend can be refactored into a more scalable structure.</p>
+<p>A future version may look like:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">app/backend/</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> main.py</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> routers/</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> schemas.py</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> db/</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> models/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>But for now, one file is enough to validate the API design.</p>
+<hr>
+</section>
+<section id="request-and-response-design" class="level2">
+<h2 class="anchored" data-anchor-id="request-and-response-design">Request and Response Design</h2>
+<p>FastAPI uses <strong>Pydantic models</strong> to validate requests and responses.</p>
+<p>For example, when creating a carousel, the frontend should send:</p>
+<ul>
+<li>a carousel name,</li>
+<li>total number of alternatives,</li>
+<li>visible count.</li>
+</ul>
+<p>When submitting feedback, the frontend should send:</p>
+<ul>
+<li>the selected carousel,</li>
+<li>and the clicked alternative id, or <code>null</code> for no click.</li>
+</ul>
+<p>This makes the API predictable and safe.</p>
+<hr>
+</section>
+<section id="full-dummy-backend-in-one-file" class="level2">
+<h2 class="anchored" data-anchor-id="full-dummy-backend-in-one-file">Full Dummy Backend in One File</h2>
+<p>Below is a simple one-file FastAPI backend that contains all the main prototype requests.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> __future__ <span class="im">import</span> annotations</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> uuid</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Any, Optional</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI, HTTPException</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi.middleware.cors <span class="im">import</span> CORSMiddleware</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI(</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Bayesian Carousel Bandits API"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    version<span class="op">=</span><span class="st">"0.1.0"</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    description<span class="op">=</span><span class="st">"Single-file FastAPI backend for the Streamlit MVP."</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>app.add_middleware(</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    CORSMiddleware,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    allow_origins<span class="op">=</span>[<span class="st">"*"</span>],</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    allow_credentials<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    allow_methods<span class="op">=</span>[<span class="st">"*"</span>],</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    allow_headers<span class="op">=</span>[<span class="st">"*"</span>],</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>CAROUSELS: <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">dict</span>[<span class="bu">str</span>, Any]] <span class="op">=</span> {}</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>DEFAULT_ALPHA <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>DEFAULT_BETA <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CarouselCreate(BaseModel):</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span> <span class="op">=</span> Field(..., min_length<span class="op">=</span><span class="dv">1</span>, max_length<span class="op">=</span><span class="dv">255</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    total_alternatives: <span class="bu">int</span> <span class="op">=</span> Field(..., ge<span class="op">=</span><span class="dv">2</span>, le<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    visible_count: <span class="bu">int</span> <span class="op">=</span> Field(..., ge<span class="op">=</span><span class="dv">1</span>, le<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FeedbackRequest(BaseModel):</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    clicked_alt_id: Optional[<span class="bu">int</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AlternativeOut(BaseModel):</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    alt_id: <span class="bu">int</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    title: <span class="bu">str</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    slot: <span class="bu">int</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    alpha: <span class="bu">float</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    beta: <span class="bu">float</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    impressions: <span class="bu">int</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    clicks: <span class="bu">int</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    posterior_mean: <span class="bu">float</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    empirical_ctr: <span class="bu">float</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CarouselSummary(BaseModel):</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    carousel_id: <span class="bu">str</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    total_alternatives: <span class="bu">int</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    visible_count: <span class="bu">int</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    created_at: <span class="bu">str</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    round_number: <span class="bu">int</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    total_impressions: <span class="bu">int</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    total_clicks: <span class="bu">int</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    average_reward: <span class="bu">float</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EventOut(BaseModel):</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    timestamp: <span class="bu">str</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>    <span class="bu">round</span>: <span class="bu">int</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>    displayed: <span class="bu">list</span>[<span class="bu">int</span>]</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>    clicked: Optional[<span class="bu">int</span>]</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>    reward: <span class="bu">int</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AnalyticsResponse(BaseModel):</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>    carousel_id: <span class="bu">str</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>    rounds: <span class="bu">int</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>    total_impressions: <span class="bu">int</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>    total_clicks: <span class="bu">int</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>    average_reward: <span class="bu">float</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>    champion_alt_id: Optional[<span class="bu">int</span>]</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>    champion_title: Optional[<span class="bu">str</span>]</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    alternatives: <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>    history: <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> now_str() <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> datetime.now().strftime(<span class="st">"%Y-%m-</span><span class="sc">%d</span><span class="st"> %H:%M:%S"</span>)</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_alternatives(total_alternatives: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]:</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>            <span class="st">"alt_id"</span>: i,</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>            <span class="st">"title"</span>: <span class="ss">f"Alternative </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>            <span class="st">"alpha"</span>: DEFAULT_ALPHA,</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>            <span class="st">"beta"</span>: DEFAULT_BETA,</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>            <span class="st">"impressions"</span>: <span class="dv">0</span>,</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>            <span class="st">"clicks"</span>: <span class="dv">0</span>,</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, total_alternatives <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_carousel_or_404(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Any]:</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> CAROUSELS.get(carousel_id)</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> carousel:</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> HTTPException(status_code<span class="op">=</span><span class="dv">404</span>, detail<span class="op">=</span><span class="st">"Carousel not found"</span>)</span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> carousel</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_stats(carousel: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]:</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>    stats: <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]] <span class="op">=</span> []</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alt <span class="kw">in</span> carousel[<span class="st">"alternatives"</span>]:</span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>        impressions <span class="op">=</span> alt[<span class="st">"impressions"</span>]</span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>        clicks <span class="op">=</span> alt[<span class="st">"clicks"</span>]</span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>        alpha <span class="op">=</span> <span class="bu">float</span>(alt[<span class="st">"alpha"</span>])</span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>        beta <span class="op">=</span> <span class="bu">float</span>(alt[<span class="st">"beta"</span>])</span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>        posterior_mean <span class="op">=</span> alpha <span class="op">/</span> (alpha <span class="op">+</span> beta)</span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>        empirical_ctr <span class="op">=</span> (clicks <span class="op">/</span> impressions) <span class="cf">if</span> impressions <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>        row <span class="op">=</span> <span class="bu">dict</span>(alt)</span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>        row[<span class="st">"posterior_mean"</span>] <span class="op">=</span> posterior_mean</span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>        row[<span class="st">"empirical_ctr"</span>] <span class="op">=</span> empirical_ctr</span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>        stats.append(row)</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> stats</span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample_carousel(carousel: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">int</span>]:</span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>    sampled: <span class="bu">list</span>[<span class="bu">tuple</span>[<span class="bu">int</span>, <span class="bu">float</span>]] <span class="op">=</span> []</span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alt <span class="kw">in</span> carousel[<span class="st">"alternatives"</span>]:</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>        theta <span class="op">=</span> random.betavariate(<span class="bu">float</span>(alt[<span class="st">"alpha"</span>]), <span class="bu">float</span>(alt[<span class="st">"beta"</span>]))</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>        sampled.append((<span class="bu">int</span>(alt[<span class="st">"alt_id"</span>]), theta))</span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>    sampled.sort(key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>    chosen <span class="op">=</span> [alt_id <span class="cf">for</span> alt_id, _ <span class="kw">in</span> sampled[: carousel[<span class="st">"visible_count"</span>]]]</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"current_display_ids"</span>] <span class="op">=</span> chosen</span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chosen</span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> current_display(carousel: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]:</span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> carousel[<span class="st">"current_display_ids"</span>]:</span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>        sample_carousel(carousel)</span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>    ids <span class="op">=</span> carousel[<span class="st">"current_display_ids"</span>]</span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>    stats <span class="op">=</span> get_stats(carousel)</span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>    selected <span class="op">=</span> [row <span class="cf">for</span> row <span class="kw">in</span> stats <span class="cf">if</span> row[<span class="st">"alt_id"</span>] <span class="kw">in</span> ids]</span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>    selected.sort(key<span class="op">=</span><span class="kw">lambda</span> row: ids.index(row[<span class="st">"alt_id"</span>]))</span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>    out: <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]] <span class="op">=</span> []</span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx, row <span class="kw">in</span> <span class="bu">enumerate</span>(selected, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>        item <span class="op">=</span> <span class="bu">dict</span>(row)</span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>        item[<span class="st">"slot"</span>] <span class="op">=</span> idx</span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>        out.append(item)</span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> update_after_feedback(carousel: <span class="bu">dict</span>[<span class="bu">str</span>, Any], clicked_alt_id: Optional[<span class="bu">int</span>]) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Any]:</span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>    displayed_ids <span class="op">=</span> <span class="bu">list</span>(carousel[<span class="st">"current_display_ids"</span>])</span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> displayed_ids:</span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>        displayed_ids <span class="op">=</span> sample_carousel(carousel)</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>    found_clicked <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> alt <span class="kw">in</span> carousel[<span class="st">"alternatives"</span>]:</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> alt[<span class="st">"alt_id"</span>] <span class="kw">in</span> displayed_ids:</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>            alt[<span class="st">"impressions"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> clicked_alt_id <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> alt[<span class="st">"alt_id"</span>] <span class="op">==</span> clicked_alt_id:</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>                alt[<span class="st">"alpha"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>                alt[<span class="st">"clicks"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>                found_clicked <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>                alt[<span class="st">"beta"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> clicked_alt_id <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="kw">not</span> found_clicked:</span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> HTTPException(status_code<span class="op">=</span><span class="dv">400</span>, detail<span class="op">=</span><span class="st">"Clicked alternative is not in the current display"</span>)</span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>    event <span class="op">=</span> {</span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>        <span class="st">"timestamp"</span>: now_str(),</span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>        <span class="st">"round"</span>: carousel[<span class="st">"round_number"</span>],</span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>        <span class="st">"displayed"</span>: displayed_ids,</span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a>        <span class="st">"clicked"</span>: clicked_alt_id,</span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>        <span class="st">"reward"</span>: <span class="dv">1</span> <span class="cf">if</span> clicked_alt_id <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="dv">0</span>,</span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"history"</span>].append(event)</span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"round_number"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>    sample_carousel(carousel)</span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> event</span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_summary(carousel: <span class="bu">dict</span>[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Any]:</span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>    stats <span class="op">=</span> get_stats(carousel)</span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>    total_impressions <span class="op">=</span> <span class="bu">sum</span>(row[<span class="st">"impressions"</span>] <span class="cf">for</span> row <span class="kw">in</span> stats)</span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>    total_clicks <span class="op">=</span> <span class="bu">sum</span>(row[<span class="st">"clicks"</span>] <span class="cf">for</span> row <span class="kw">in</span> stats)</span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>    average_reward <span class="op">=</span> (total_clicks <span class="op">/</span> total_impressions) <span class="cf">if</span> total_impressions <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a>        <span class="st">"carousel_id"</span>: carousel[<span class="st">"carousel_id"</span>],</span>
+<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a>        <span class="st">"name"</span>: carousel[<span class="st">"name"</span>],</span>
+<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_alternatives"</span>: carousel[<span class="st">"total_alternatives"</span>],</span>
+<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a>        <span class="st">"visible_count"</span>: carousel[<span class="st">"visible_count"</span>],</span>
+<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>        <span class="st">"created_at"</span>: carousel[<span class="st">"created_at"</span>],</span>
+<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a>        <span class="st">"round_number"</span>: carousel[<span class="st">"round_number"</span>],</span>
+<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_impressions"</span>: total_impressions,</span>
+<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_clicks"</span>: total_clicks,</span>
+<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a>        <span class="st">"average_reward"</span>: average_reward,</span>
+<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_champion(stats: <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]) <span class="op">-&gt;</span> <span class="bu">tuple</span>[Optional[<span class="bu">int</span>], Optional[<span class="bu">str</span>]]:</span>
+<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> stats:</span>
+<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span>, <span class="va">None</span></span>
+<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a>    champion <span class="op">=</span> <span class="bu">max</span>(stats, key<span class="op">=</span><span class="kw">lambda</span> row: row[<span class="st">"posterior_mean"</span>])</span>
+<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> champion[<span class="st">"alt_id"</span>], champion[<span class="st">"title"</span>]</span>
+<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/"</span>)</span>
+<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> root() <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]:</span>
+<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"message"</span>: <span class="st">"Bayesian Carousel Bandits API is running"</span>}</span>
+<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/health"</span>)</span>
+<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> health() <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]:</span>
+<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"status"</span>: <span class="st">"ok"</span>}</span>
+<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/carousels"</span>, response_model<span class="op">=</span><span class="bu">list</span>[CarouselSummary])</span>
+<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> list_carousels() <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]:</span>
+<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [build_summary(carousel) <span class="cf">for</span> carousel <span class="kw">in</span> CAROUSELS.values()]</span>
+<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a><span class="at">@app.post</span>(<span class="st">"/carousels"</span>, response_model<span class="op">=</span>CarouselSummary)</span>
+<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_carousel(payload: CarouselCreate) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Any]:</span>
+<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> payload.visible_count <span class="op">&gt;</span> payload.total_alternatives:</span>
+<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> HTTPException(</span>
+<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a>            status_code<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a>            detail<span class="op">=</span><span class="st">"visible_count cannot be greater than total_alternatives"</span>,</span>
+<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a>    carousel_id <span class="op">=</span> <span class="bu">str</span>(uuid.uuid4())[:<span class="dv">8</span>]</span>
+<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> {</span>
+<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a>        <span class="st">"carousel_id"</span>: carousel_id,</span>
+<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a>        <span class="st">"name"</span>: payload.name,</span>
+<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_alternatives"</span>: payload.total_alternatives,</span>
+<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a>        <span class="st">"visible_count"</span>: payload.visible_count,</span>
+<span id="cb3-246"><a href="#cb3-246" aria-hidden="true" tabindex="-1"></a>        <span class="st">"created_at"</span>: now_str(),</span>
+<span id="cb3-247"><a href="#cb3-247" aria-hidden="true" tabindex="-1"></a>        <span class="st">"round_number"</span>: <span class="dv">1</span>,</span>
+<span id="cb3-248"><a href="#cb3-248" aria-hidden="true" tabindex="-1"></a>        <span class="st">"alternatives"</span>: create_alternatives(payload.total_alternatives),</span>
+<span id="cb3-249"><a href="#cb3-249" aria-hidden="true" tabindex="-1"></a>        <span class="st">"history"</span>: [],</span>
+<span id="cb3-250"><a href="#cb3-250" aria-hidden="true" tabindex="-1"></a>        <span class="st">"current_display_ids"</span>: [],</span>
+<span id="cb3-251"><a href="#cb3-251" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-252"><a href="#cb3-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-253"><a href="#cb3-253" aria-hidden="true" tabindex="-1"></a>    sample_carousel(carousel)</span>
+<span id="cb3-254"><a href="#cb3-254" aria-hidden="true" tabindex="-1"></a>    CAROUSELS[carousel_id] <span class="op">=</span> carousel</span>
+<span id="cb3-255"><a href="#cb3-255" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> build_summary(carousel)</span>
+<span id="cb3-256"><a href="#cb3-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-257"><a href="#cb3-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-258"><a href="#cb3-258" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">"</span>)</span>
+<span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_carousel(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Any]:</span>
+<span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>        <span class="st">"carousel_id"</span>: carousel[<span class="st">"carousel_id"</span>],</span>
+<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>        <span class="st">"name"</span>: carousel[<span class="st">"name"</span>],</span>
+<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_alternatives"</span>: carousel[<span class="st">"total_alternatives"</span>],</span>
+<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a>        <span class="st">"visible_count"</span>: carousel[<span class="st">"visible_count"</span>],</span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>        <span class="st">"created_at"</span>: carousel[<span class="st">"created_at"</span>],</span>
+<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>        <span class="st">"round_number"</span>: carousel[<span class="st">"round_number"</span>],</span>
+<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a>        <span class="st">"alternatives"</span>: get_stats(carousel),</span>
+<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>        <span class="st">"history_count"</span>: <span class="bu">len</span>(carousel[<span class="st">"history"</span>]),</span>
+<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a><span class="at">@app.delete</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">"</span>)</span>
+<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> delete_carousel(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]:</span>
+<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a>    get_carousel_or_404(carousel_id)</span>
+<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>    <span class="kw">del</span> CAROUSELS[carousel_id]</span>
+<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"message"</span>: <span class="st">"Carousel deleted successfully"</span>}</span>
+<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a><span class="at">@app.post</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">/reset"</span>)</span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reset_carousel(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, <span class="bu">str</span>]:</span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"alternatives"</span>] <span class="op">=</span> create_alternatives(carousel[<span class="st">"total_alternatives"</span>])</span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"history"</span>] <span class="op">=</span> []</span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"current_display_ids"</span>] <span class="op">=</span> []</span>
+<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"round_number"</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a>    sample_carousel(carousel)</span>
+<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"message"</span>: <span class="st">"Carousel reset successfully"</span>}</span>
+<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">/display"</span>, response_model<span class="op">=</span><span class="bu">list</span>[AlternativeOut])</span>
+<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_display(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]:</span>
+<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> current_display(carousel)</span>
+<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a><span class="at">@app.post</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">/resample"</span>, response_model<span class="op">=</span><span class="bu">list</span>[AlternativeOut])</span>
+<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resample_display(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]:</span>
+<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>    sample_carousel(carousel)</span>
+<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> current_display(carousel)</span>
+<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a><span class="at">@app.post</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">/feedback"</span>, response_model<span class="op">=</span>EventOut)</span>
+<span id="cb3-305"><a href="#cb3-305" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> submit_feedback(carousel_id: <span class="bu">str</span>, payload: FeedbackRequest) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Any]:</span>
+<span id="cb3-306"><a href="#cb3-306" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb3-307"><a href="#cb3-307" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> update_after_feedback(carousel, payload.clicked_alt_id)</span>
+<span id="cb3-308"><a href="#cb3-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-309"><a href="#cb3-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-310"><a href="#cb3-310" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">/events"</span>, response_model<span class="op">=</span><span class="bu">list</span>[EventOut])</span>
+<span id="cb3-311"><a href="#cb3-311" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_events(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">dict</span>[<span class="bu">str</span>, Any]]:</span>
+<span id="cb3-312"><a href="#cb3-312" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb3-313"><a href="#cb3-313" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> carousel[<span class="st">"history"</span>]</span>
+<span id="cb3-314"><a href="#cb3-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-315"><a href="#cb3-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-316"><a href="#cb3-316" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/carousels/</span><span class="sc">{carousel_id}</span><span class="st">/analytics"</span>, response_model<span class="op">=</span>AnalyticsResponse)</span>
+<span id="cb3-317"><a href="#cb3-317" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_analytics(carousel_id: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">dict</span>[<span class="bu">str</span>, Any]:</span>
+<span id="cb3-318"><a href="#cb3-318" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb3-319"><a href="#cb3-319" aria-hidden="true" tabindex="-1"></a>    stats <span class="op">=</span> get_stats(carousel)</span>
+<span id="cb3-320"><a href="#cb3-320" aria-hidden="true" tabindex="-1"></a>    stats_sorted <span class="op">=</span> <span class="bu">sorted</span>(stats, key<span class="op">=</span><span class="kw">lambda</span> row: row[<span class="st">"posterior_mean"</span>], reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-321"><a href="#cb3-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-322"><a href="#cb3-322" aria-hidden="true" tabindex="-1"></a>    champion_alt_id, champion_title <span class="op">=</span> get_champion(stats_sorted)</span>
+<span id="cb3-323"><a href="#cb3-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-324"><a href="#cb3-324" aria-hidden="true" tabindex="-1"></a>    total_impressions <span class="op">=</span> <span class="bu">sum</span>(row[<span class="st">"impressions"</span>] <span class="cf">for</span> row <span class="kw">in</span> stats_sorted)</span>
+<span id="cb3-325"><a href="#cb3-325" aria-hidden="true" tabindex="-1"></a>    total_clicks <span class="op">=</span> <span class="bu">sum</span>(row[<span class="st">"clicks"</span>] <span class="cf">for</span> row <span class="kw">in</span> stats_sorted)</span>
+<span id="cb3-326"><a href="#cb3-326" aria-hidden="true" tabindex="-1"></a>    average_reward <span class="op">=</span> (total_clicks <span class="op">/</span> total_impressions) <span class="cf">if</span> total_impressions <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb3-327"><a href="#cb3-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-328"><a href="#cb3-328" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb3-329"><a href="#cb3-329" aria-hidden="true" tabindex="-1"></a>        <span class="st">"carousel_id"</span>: carousel[<span class="st">"carousel_id"</span>],</span>
+<span id="cb3-330"><a href="#cb3-330" aria-hidden="true" tabindex="-1"></a>        <span class="st">"name"</span>: carousel[<span class="st">"name"</span>],</span>
+<span id="cb3-331"><a href="#cb3-331" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rounds"</span>: <span class="bu">max</span>(carousel[<span class="st">"round_number"</span>] <span class="op">-</span> <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb3-332"><a href="#cb3-332" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_impressions"</span>: total_impressions,</span>
+<span id="cb3-333"><a href="#cb3-333" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total_clicks"</span>: total_clicks,</span>
+<span id="cb3-334"><a href="#cb3-334" aria-hidden="true" tabindex="-1"></a>        <span class="st">"average_reward"</span>: average_reward,</span>
+<span id="cb3-335"><a href="#cb3-335" aria-hidden="true" tabindex="-1"></a>        <span class="st">"champion_alt_id"</span>: champion_alt_id,</span>
+<span id="cb3-336"><a href="#cb3-336" aria-hidden="true" tabindex="-1"></a>        <span class="st">"champion_title"</span>: champion_title,</span>
+<span id="cb3-337"><a href="#cb3-337" aria-hidden="true" tabindex="-1"></a>        <span class="st">"alternatives"</span>: stats_sorted,</span>
+<span id="cb3-338"><a href="#cb3-338" aria-hidden="true" tabindex="-1"></a>        <span class="st">"history"</span>: carousel[<span class="st">"history"</span>],</span>
+<span id="cb3-339"><a href="#cb3-339" aria-hidden="true" tabindex="-1"></a>    }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+<section id="how-to-run-the-prototype-backend" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-run-the-prototype-backend">How to Run the Prototype Backend</h2>
+<p>Save the code in a separate practice folder as:</p>
+<pre class="text"><code>backend_prototype.py</code></pre>
+<p>With FastAPI and Uvicorn installed in your Python environment, run this from that practice folder:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uvicorn</span> backend_prototype:app <span class="at">--reload</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This starts the in-memory example. The repository backend has a different entry point, <code>backend.main:app</code>, launched from <code>app/</code> or through Docker Compose.</p>
+<p>The API will usually be available at:</p>
+<pre class="text"><code>http://localhost:8000</code></pre>
+<p>The automatic FastAPI documentation will be available at:</p>
+<pre class="text"><code>http://localhost:8000/docs</code></pre>
+<hr>
+</section>
+<section id="try-requests-and-read-the-responses" class="level2">
+<h2 class="anchored" data-anchor-id="try-requests-and-read-the-responses">Try Requests and Read the Responses</h2>
+<p><strong>These examples target the single-file practice prototype above</strong>, freshly started at <code>http://localhost:8000</code>. <code>curl</code> works in a terminal; in Windows PowerShell use <code>curl.exe</code> if <code>curl</code> resolves to a different command. Multi-line shell examples below use Bash syntax.</p>
+<section id="get-read-without-creating-a-carousel" class="level3">
+<h3 class="anchored" data-anchor-id="get-read-without-creating-a-carousel">GET: Read Without Creating a Carousel</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-i</span> http://localhost:8000/health</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Expected response, with routine headers omitted:</strong></p>
+<pre class="http"><code>HTTP/1.1 200 OK
+content-type: application/json
+
+{"status":"ok"}</code></pre>
+<p><code>-i</code> includes headers and the status line. To inspect a fresh collection:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> http://localhost:8000/carousels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Expected body before creating any records:</strong> <code>[]</code>.</p>
+</section>
+<section id="post-send-a-json-body" class="level3">
+<h3 class="anchored" data-anchor-id="post-send-a-json-body">POST: Send a JSON Body</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-i</span> <span class="at">-X</span> POST http://localhost:8000/carousels <span class="dt">\</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{"name":"Summer offers","total_alternatives":4,"visible_count":2}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Representative body; the identifier and timestamp are generated:</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"carousel_id"</span><span class="fu">:</span> <span class="st">"a1b2c3d4"</span><span class="fu">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"name"</span><span class="fu">:</span> <span class="st">"Summer offers"</span><span class="fu">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"total_alternatives"</span><span class="fu">:</span> <span class="dv">4</span><span class="fu">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"visible_count"</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"created_at"</span><span class="fu">:</span> <span class="st">"2026-11-25 12:00:00"</span><span class="fu">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"round_number"</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"total_impressions"</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"total_clicks"</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"average_reward"</span><span class="fu">:</span> <span class="dv">0</span><span class="er">.</span><span class="dv">0</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The current prototype returns <strong><code>200 OK</code></strong>. Copy your actual <code>carousel_id</code>; the example value above is a placeholder. <code>-X</code> chooses the method, <code>-H</code> adds a header, and <code>-d</code> supplies the body.</p>
+</section>
+<section id="use-the-created-identifier-in-a-path" class="level3">
+<h3 class="anchored" data-anchor-id="use-the-created-identifier-in-a-path">Use the Created Identifier in a Path</h3>
+<p>In Bash, store your own returned identifier:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="va">carousel_id</span><span class="op">=</span>your_returned_carousel_id</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="st">"http://localhost:8000/carousels/</span><span class="va">$carousel_id</span><span class="st">/display"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expect a JSON array containing <code>visible_count</code> alternatives, with fields such as <code>alt_id</code>, <code>title</code>, <code>alpha</code>, and <code>beta</code>. Their selection is randomized, so their IDs can vary.</p>
+<p>To record a no-click event:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> POST <span class="st">"http://localhost:8000/carousels/</span><span class="va">$carousel_id</span><span class="st">/feedback"</span> <span class="dt">\</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="dt">\</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{"clicked_alt_id":null}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The response includes the displayed IDs, <code>clicked: null</code>, and <code>reward: 0</code>. For a click, send an <code>alt_id</code> from the current display; an ID outside that display is rejected.</p>
+</section>
+<section id="errors-are-responses-too" class="level3">
+<h3 class="anchored" data-anchor-id="errors-are-responses-too">Errors Are Responses Too</h3>
+<p>Try the following independent examples against the practice prototype:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Command or input</th>
+<th>Expected response</th>
+<th>What it teaches</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>curl -i http://localhost:8000/carousels/missing</code></td>
+<td><code>404</code> and <code>{"detail":"Carousel not found"}</code></td>
+<td>A valid request can refer to a missing resource.</td>
+</tr>
+<tr class="even">
+<td>Create with <code>"total_alternatives":"many"</code></td>
+<td><code>422</code> with validation details</td>
+<td>The field must be an integer.</td>
+</tr>
+<tr class="odd">
+<td>Create with <code>"total_alternatives":2</code> and <code>"visible_count":3</code></td>
+<td><code>400</code> and a visible-count explanation</td>
+<td>The types are valid, but the product rule fails.</td>
+</tr>
+<tr class="even">
+<td><code>curl -i -X PUT http://localhost:8000/carousels/missing</code></td>
+<td><code>405</code></td>
+<td>This base prototype does not implement PUT.</td>
+</tr>
+</tbody>
+</table>
+<p>Read both the status and the body’s <code>detail</code> field. A <code>500</code> response requires inspecting the server logs rather than guessing from the frontend alone.</p>
+</section>
+<section id="delete-remove-a-practice-resource" class="level3">
+<h3 class="anchored" data-anchor-id="delete-remove-a-practice-resource">DELETE: Remove a Practice Resource</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> DELETE <span class="st">"http://localhost:8000/carousels/</span><span class="va">$carousel_id</span><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Expected body:</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"message"</span><span class="fu">:</span><span class="st">"Carousel deleted successfully"</span><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The prototype returns <code>200</code>. A later <code>GET</code> for the deleted ID returns <code>404</code>.</p>
+</section>
+<section id="optional-exercise-add-a-query-parameter" class="level3">
+<h3 class="anchored" data-anchor-id="optional-exercise-add-a-query-parameter">Optional Exercise: Add a Query Parameter</h3>
+<p>Add this route to the practice prototype:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> Query</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/examples/alternatives"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filter_example_alternatives(min_clicks: <span class="bu">int</span> <span class="op">=</span> Query(default<span class="op">=</span><span class="dv">0</span>, ge<span class="op">=</span><span class="dv">0</span>)):</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> [</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"alt_id"</span>: <span class="dv">1</span>, <span class="st">"clicks"</span>: <span class="dv">1</span>},</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"alt_id"</span>: <span class="dv">2</span>, <span class="st">"clicks"</span>: <span class="dv">3</span>},</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [row <span class="cf">for</span> row <span class="kw">in</span> rows <span class="cf">if</span> row[<span class="st">"clicks"</span>] <span class="op">&gt;=</span> min_clicks]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="st">"http://localhost:8000/examples/alternatives?min_clicks=2"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Expected body:</strong> <code>[{"alt_id":2,"clicks":3}]</code>. Here the path chooses the operation and the query value controls its filter. A negative value returns <code>422</code> because of <code>ge=0</code>.</p>
+</section>
+<section id="optional-exercise-add-a-patch-request" class="level3">
+<h3 class="anchored" data-anchor-id="optional-exercise-add-a-patch-request">Optional Exercise: Add a PATCH Request</h3>
+<p>This small extension updates only the name in the <strong>practice prototype</strong>. Add it after the prototype’s existing definitions:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CarouselRename(BaseModel):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span> <span class="op">=</span> Field(..., min_length<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="at">@app.patch</span>(<span class="st">"/examples/carousels/</span><span class="sc">{carousel_id}</span><span class="st">"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rename_example_carousel(carousel_id: <span class="bu">str</span>, payload: CarouselRename):</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    carousel <span class="op">=</span> get_carousel_or_404(carousel_id)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    carousel[<span class="st">"name"</span>] <span class="op">=</span> payload.name</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"carousel_id"</span>: carousel_id, <span class="st">"name"</span>: carousel[<span class="st">"name"</span>]}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Create a new carousel if you deleted the earlier example, then use its identifier:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-X</span> PATCH <span class="st">"http://localhost:8000/examples/carousels/</span><span class="va">$carousel_id</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="dt">\</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{"name":"Autumn offers"}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expect <code>200</code> and a body with your <code>carousel_id</code> and <code>"name":"Autumn offers"</code>. The number of alternatives and other settings remain as they were.</p>
+</section>
+<section id="put-in-the-repository-backend" class="level3">
+<h3 class="anchored" data-anchor-id="put-in-the-repository-backend">PUT in the Repository Backend</h3>
+<p>The modular API under <code>app/backend/</code> already has an update route. After starting that version with its PostgreSQL database, use a <strong>full UUID returned under <code>id</code></strong>:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="va">carousel_id</span><span class="op">=</span>your_full_carousel_uuid</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-i</span> <span class="at">-X</span> PUT <span class="st">"http://localhost:8000/carousels/</span><span class="va">$carousel_id</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{"round_number":2}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Expect <code>200</code> and a carousel response containing <code>"round_number":2</code>. This is the repository’s partial-update behavior described above. An invalid UUID produces <code>422</code>; a valid UUID absent from the database produces <code>404</code>. Use <code>/docs</code> on the running version to inspect its supported routes and schemas.</p>
+</section>
+</section>
+<section id="make-the-same-requests-from-python" class="level2">
+<h2 class="anchored" data-anchor-id="make-the-same-requests-from-python">Make the Same Requests from Python</h2>
+<p>With the <code>requests</code> package installed, run this against a fresh <strong>practice prototype</strong>. These are real HTTP calls, just like the frontend will make.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>base_url <span class="op">=</span> <span class="st">"http://localhost:8000"</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>created <span class="op">=</span> requests.post(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>base_url<span class="sc">}</span><span class="ss">/carousels"</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    json<span class="op">=</span>{<span class="st">"name"</span>: <span class="st">"Python demo"</span>, <span class="st">"total_alternatives"</span>: <span class="dv">4</span>, <span class="st">"visible_count"</span>: <span class="dv">2</span>},</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    timeout<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>created.raise_for_status()</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>carousel_id <span class="op">=</span> created.json()[<span class="st">"carousel_id"</span>]</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Create status:"</span>, created.status_code)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>visible <span class="op">=</span> requests.get(<span class="ss">f"</span><span class="sc">{</span>base_url<span class="sc">}</span><span class="ss">/carousels/</span><span class="sc">{</span>carousel_id<span class="sc">}</span><span class="ss">/display"</span>, timeout<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>visible.raise_for_status()</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>clicked_id <span class="op">=</span> visible.json()[<span class="dv">0</span>][<span class="st">"alt_id"</span>]</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>feedback <span class="op">=</span> requests.post(</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>base_url<span class="sc">}</span><span class="ss">/carousels/</span><span class="sc">{</span>carousel_id<span class="sc">}</span><span class="ss">/feedback"</span>,</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    json<span class="op">=</span>{<span class="st">"clicked_alt_id"</span>: clicked_id},</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    timeout<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>feedback.raise_for_status()</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>analytics <span class="op">=</span> requests.get(<span class="ss">f"</span><span class="sc">{</span>base_url<span class="sc">}</span><span class="ss">/carousels/</span><span class="sc">{</span>carousel_id<span class="sc">}</span><span class="ss">/analytics"</span>, timeout<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>analytics.raise_for_status()</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Clicks recorded:"</span>, analytics.json()[<span class="st">"total_clicks"</span>])</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rounds:"</span>, analytics.json()[<span class="st">"rounds"</span>])</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>deleted <span class="op">=</span> requests.delete(<span class="ss">f"</span><span class="sc">{</span>base_url<span class="sc">}</span><span class="ss">/carousels/</span><span class="sc">{</span>carousel_id<span class="sc">}</span><span class="ss">"</span>, timeout<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>deleted.raise_for_status()</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(deleted.json()[<span class="st">"message"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Expected output:</strong></p>
+<pre class="text"><code>Create status: 200
+Clicks recorded: 1
+Rounds: 1
+Carousel deleted successfully</code></pre>
+<p><code>json=</code> serializes a Python dictionary as JSON and sets the content type. <code>response.json()</code> reads the returned JSON. <code>raise_for_status()</code> raises on HTTP error statuses; connection errors and timeouts are separate exceptions. Use a timeout so a call cannot wait indefinitely. See <a href="https://requests.readthedocs.io/en/latest/user/quickstart/">Requests quick start</a>.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant P as Python requests client
+    participant A as Practice API
+    P-&gt;&gt;A: POST /carousels with JSON
+    A--&gt;&gt;P: 200 with carousel_id
+    P-&gt;&gt;A: GET display using that ID
+    A--&gt;&gt;P: Selected alternatives
+    P-&gt;&gt;A: POST feedback with one displayed ID
+    A--&gt;&gt;P: Event with reward 1
+    P-&gt;&gt;A: GET analytics
+    A--&gt;&gt;P: Updated metrics
+    P-&gt;&gt;A: DELETE practice carousel
+    A--&gt;&gt;P: Confirmation
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Read top to bottom:</strong> each response provides information needed by the next request. The client keeps the returned identifier rather than inventing one.</p>
+</section>
+<section id="how-the-frontend-will-use-these-requests-later" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-frontend-will-use-these-requests-later">How the Frontend Will Use These Requests Later</h2>
+<p>Later, the Streamlit frontend will call these endpoints.</p>
+<p>For example:</p>
+<ul>
+<li>the Create Carousels page will call <code>POST /carousels</code></li>
+<li>the Interaction page will call <code>GET /carousels/{carousel_id}/display</code></li>
+<li>feedback buttons will call <code>POST /carousels/{carousel_id}/feedback</code></li>
+<li>the Analytics page will call <code>GET /carousels/{carousel_id}/analytics</code></li>
+</ul>
+<p>This means the frontend can stay focused on UI while FastAPI handles the application logic.</p>
+<hr>
+</section>
+<section id="example-backend-flow" class="level2">
+<h2 class="anchored" data-anchor-id="example-backend-flow">Example Backend Flow</h2>
+<p>A simple interaction flow is:</p>
+<ol type="1">
+<li>create a carousel</li>
+<li>fetch the currently displayed alternatives</li>
+<li>submit click feedback</li>
+<li>request updated analytics</li>
+</ol>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant F as Frontend
+    participant B as FastAPI
+
+    F-&gt;&gt;B: POST /carousels
+    B--&gt;&gt;F: carousel_id
+
+    F-&gt;&gt;B: GET /carousels/{id}/display
+    B--&gt;&gt;F: visible alternatives
+
+    F-&gt;&gt;B: POST /carousels/{id}/feedback
+    B--&gt;&gt;F: event result
+
+    F-&gt;&gt;B: GET /carousels/{id}/analytics
+    B--&gt;&gt;F: updated metrics
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="why-this-prototype-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-this-prototype-matters">Why This Prototype Matters</h2>
+<p>This backend version is useful because it already defines:</p>
+<ul>
+<li>the API structure,</li>
+<li>the request names,</li>
+<li>the request payloads,</li>
+<li>the expected responses,</li>
+<li>and the future frontend-backend contract.</li>
+</ul>
+<p>Even though it is still dummy and in-memory, it is a strong first step toward the full implementation.</p>
+<hr>
+</section>
+<section id="later-evolution" class="level2">
+<h2 class="anchored" data-anchor-id="later-evolution">Later Evolution</h2>
+<p>Later, this prototype backend can evolve into a real full-stack backend by adding:</p>
+<ul>
+<li>PostgreSQL persistence,</li>
+<li>SQLAlchemy models,</li>
+<li>routers,</li>
+<li>service layers,</li>
+<li>database sessions,</li>
+<li>and proper business logic separation.</li>
+</ul>
+<p>At that point, the same endpoints can remain, but their internal implementation will become production-style.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A[Single File FastAPI Prototype] --&gt; B[Modular Routers]
+    B --&gt; C[Database Integration]
+    C --&gt; D[Production Backend]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>This FastAPI prototype provides a clean backend introduction for the project.</p>
+<p>It includes:</p>
+<ul>
+<li>one-file setup,</li>
+<li>all main dummy requests,</li>
+<li>request and response models,</li>
+<li>interaction flow,</li>
+<li>and a clear path for later full implementation.</li>
+</ul>
+<p>This is the right stage for learning how the backend should work before moving into database-connected production code.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
