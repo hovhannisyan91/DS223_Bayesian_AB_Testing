@@ -1,0 +1,8 @@
+[project]
+name = "tutorial"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "quarto>=0.1.0",
+    "quarto-cli>=1.11.9",
+]

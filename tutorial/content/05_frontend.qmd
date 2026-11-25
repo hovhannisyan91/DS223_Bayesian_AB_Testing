@@ -2,7 +2,7 @@
 title: "Intro to Streamlit"
 subtitle: "Prototype"
 categories: [Docker, Python, Streamlit, Frontend]
-image_path: "../img/frontend"
+image_path: "../img/product"
 ---
 
 ## Streamlit Frontend

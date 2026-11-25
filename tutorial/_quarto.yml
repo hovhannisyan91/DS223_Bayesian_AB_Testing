@@ -13,7 +13,7 @@ execute:
 
 
 website:
-  title: "DS223 Group Project"
+  title: "DS223 Data Products"
   favicon: img/auaicon.ico
   # site-url: https://hovhannisyan91.github.io/aca #TODO
   sidebar:

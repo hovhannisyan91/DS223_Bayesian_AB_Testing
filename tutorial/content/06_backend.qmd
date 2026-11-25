@@ -1,12 +1,26 @@
 ---
 title: "Intro to FastAPI"
-subtitle: "Interacting with the DB and Web"
+subtitle: "HTTP Requests, Methods, Validation, and FastAPI"
 categories: [FastAPI, Python, SQL, PostgreSQL, Backend Development]
 image_path: "../img"
 ---
 
 
 ## FastAPI Backend
+
+::: {.callout-note title="Which backend are we using?"}
+This page starts with HTTP concepts, then builds a **single-file, in-memory practice API**. The repository also contains a database-connected API under `app/backend/`.
+
+| Detail | Practice prototype on this page | Repository backend |
+|---|---|---|
+| Carousel identifier in JSON | Short string under `carousel_id` | Full UUID under `id` |
+| Storage | Python dictionaries; restart clears them | PostgreSQL through SQLAlchemy |
+| Record feedback | `POST /carousels/{carousel_id}/feedback` | `POST /interactions` |
+| Reset a carousel | `POST /carousels/{carousel_id}/reset` | `PUT /carousels/{carousel_id}/reset` |
+| Update a carousel | No update route in the base prototype | `PUT /carousels/{carousel_id}` |
+
+Use each example with its named version. The [database lesson](04_database.qmd#the-products-actual-sqlalchemy-models) explains the repository's actual persistence models.
+:::
 
 At this stage, the backend is introduced as a **single-file FastAPI prototype**.
 
@@ -45,6 +59,87 @@ flowchart TD
 ```
 
 ---
+
+## What Is an HTTP Request?
+
+A **request** is a message asking a server to do something. A **response** tells the caller what happened and can include data. An endpoint is identified by both its **method** and its **path**: `GET /carousels` and `POST /carousels` perform different operations at the same path.
+
+### Read a Request One Part at a Time
+
+```http
+POST /carousels HTTP/1.1
+Host: localhost:8000
+Content-Type: application/json
+
+{"name":"Summer offers","total_alternatives":4,"visible_count":2}
+```
+
+| Part | What it tells the server |
+|---|---|
+| Method: `POST` | Process the submitted data; here, create a carousel. |
+| Path: `/carousels` | Which resource or operation is being requested. |
+| Headers | Extra information, such as the body's format. |
+| Body | The input data; this example uses JSON. |
+
+The blank line separates headers from the body. JSON is a data format; it is different from Python syntax, so a missing value is written `null` in JSON and `None` in Python.
+
+```{mermaid}
+flowchart TD
+    accTitle: The HTTP request and response cycle in FastAPI
+    accDescr: A client sends a method, path, headers, and optional body. FastAPI matches the route and validates the input. Invalid input receives 422; valid input reaches the function, which returns a status and JSON or a business error.
+    C["Client<br/>Streamlit, curl, or Python"] --> R["HTTP request<br/>method + path + headers + body"]
+    R --> V["FastAPI matches route<br/>and validates input"]
+    V -->|"invalid fields"| E["422 response<br/>Validation details"]
+    V -->|"valid input"| F["Endpoint function<br/>Apply product rules"]
+    F -->|"successful operation"| S["Success status + JSON result"]
+    F -->|"missing carousel or invalid action"| B["404 or 400 response<br/>Useful explanation"]
+    S --> C
+    E --> C
+    B --> C
+```
+
+**Follow the success and error paths.** FastAPI can reject a value of the wrong type before the function runs. The function still needs to enforce product rules, such as keeping `visible_count` within the total number of alternatives. See [request-body validation](https://fastapi.tiangolo.com/tutorial/body/).
+
+### HTTP Methods: What Kind of Action?
+
+| Method | Usual meaning | Carousel example |
+|---|---|---|
+| `GET` | Read a representation. | List carousels or fetch analytics. |
+| `POST` | Submit data for processing, often creating a new resource. | Create a carousel or record feedback. |
+| `PUT` | Replace the state of a known resource. | A full settings update at a known carousel URL. |
+| `PATCH` | Apply a partial change. | Rename a carousel while keeping its other settings. |
+| `DELETE` | Remove the resource identified by the URL. | Delete a practice carousel. |
+| `HEAD` | Ask for response headers without a response body. | Check response metadata when a route supports it. |
+| `OPTIONS` | Ask about communication options. | A browser's CORS preflight request. |
+
+`GET` is intended for reads. `PUT` and `DELETE` are idempotent: repeating the same request should have the same intended final effect, though the returned status can differ. `POST` does not promise this property, so blindly retrying a create request can produce duplicates. See [HTTP semantics](https://www.rfc-editor.org/rfc/rfc9110.html#section-9) and [PATCH semantics](https://www.rfc-editor.org/rfc/rfc5789.html).
+
+The current repository's `PUT /carousels/{carousel_id}` accepts a partial update model; `PATCH` would describe that behavior more precisely. This tutorial explains the convention while identifying the implementation students will actually see. The base practice prototype has no `PUT` or `PATCH` route; an unsupported method on an existing path returns `405`.
+
+### Path, Query, and Body: Where Does an Input Go?
+
+| Input location | Example | Purpose |
+|---|---|---|
+| Path parameter | `/carousels/abc123` | Identify the particular carousel. |
+| Query parameter | `/examples/alternatives?min_clicks=2` | Filter or modify a read operation. This optional exercise is defined below. |
+| JSON body | `{"name":"Summer offers", ...}` | Supply structured input for a create or update operation. |
+
+FastAPI reads a named path value from the URL, ordinary typed function parameters from the query string, and Pydantic model parameters from the JSON body. See [path parameters](https://fastapi.tiangolo.com/tutorial/path-params/) and [query parameters](https://fastapi.tiangolo.com/tutorial/query-params/).
+
+### Status Codes: Did It Work?
+
+| Status | What students should read from it |
+|---|---|
+| `200 OK` | The request succeeded. Both our prototype's and repository's create routes currently use this default. |
+| `201 Created` | A conventional create response when explicitly configured with `status_code=201`. |
+| `204 No Content` | Success with no response body, when the endpoint is designed that way. |
+| `400 Bad Request` | The prototype rejected a product rule, such as displaying more alternatives than exist. |
+| `404 Not Found` | The requested carousel does not exist. |
+| `405 Method Not Allowed` | The path exists but does not support that method. |
+| `422 Unprocessable Content` | FastAPI could not validate the input. |
+| `500 Internal Server Error` | The server encountered an unhandled error. |
+
+A successful response has a status, headers, and often a JSON body. In FastAPI, return a dictionary or response model and configure a different status when needed. See [response status codes](https://fastapi.tiangolo.com/tutorial/response-status-code/).
 
 ## Why FastAPI for This Project
 
@@ -518,17 +613,19 @@ def get_analytics(carousel_id: str) -> dict[str, Any]:
 
 ## How to Run the Prototype Backend
 
-Save the file as:
+Save the code in a separate practice folder as:
 
 ```text
-app/back/main.py
+backend_prototype.py
 ```
 
-Then run:
+With FastAPI and Uvicorn installed in your Python environment, run this from that practice folder:
 
 ```bash
-uvicorn main:app --reload
+uvicorn backend_prototype:app --reload
 ```
+
+This starts the in-memory example. The repository backend has a different entry point, `backend.main:app`, launched from `app/` or through Docker Compose.
 
 The API will usually be available at:
 
@@ -543,6 +640,235 @@ http://localhost:8000/docs
 ```
 
 ---
+
+## Try Requests and Read the Responses
+
+**These examples target the single-file practice prototype above**, freshly started at `http://localhost:8000`. `curl` works in a terminal; in Windows PowerShell use `curl.exe` if `curl` resolves to a different command. Multi-line shell examples below use Bash syntax.
+
+### GET: Read Without Creating a Carousel
+
+```bash
+curl -i http://localhost:8000/health
+```
+
+**Expected response, with routine headers omitted:**
+
+```http
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"status":"ok"}
+```
+
+`-i` includes headers and the status line. To inspect a fresh collection:
+
+```bash
+curl http://localhost:8000/carousels
+```
+
+**Expected body before creating any records:** `[]`.
+
+### POST: Send a JSON Body
+
+```bash
+curl -i -X POST http://localhost:8000/carousels \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Summer offers","total_alternatives":4,"visible_count":2}'
+```
+
+**Representative body; the identifier and timestamp are generated:**
+
+```json
+{
+  "carousel_id": "a1b2c3d4",
+  "name": "Summer offers",
+  "total_alternatives": 4,
+  "visible_count": 2,
+  "created_at": "2026-11-25 12:00:00",
+  "round_number": 1,
+  "total_impressions": 0,
+  "total_clicks": 0,
+  "average_reward": 0.0
+}
+```
+
+The current prototype returns **`200 OK`**. Copy your actual `carousel_id`; the example value above is a placeholder. `-X` chooses the method, `-H` adds a header, and `-d` supplies the body.
+
+### Use the Created Identifier in a Path
+
+In Bash, store your own returned identifier:
+
+```bash
+carousel_id=your_returned_carousel_id
+curl "http://localhost:8000/carousels/$carousel_id/display"
+```
+
+Expect a JSON array containing `visible_count` alternatives, with fields such as `alt_id`, `title`, `alpha`, and `beta`. Their selection is randomized, so their IDs can vary.
+
+To record a no-click event:
+
+```bash
+curl -X POST "http://localhost:8000/carousels/$carousel_id/feedback" \
+  -H "Content-Type: application/json" \
+  -d '{"clicked_alt_id":null}'
+```
+
+The response includes the displayed IDs, `clicked: null`, and `reward: 0`. For a click, send an `alt_id` from the current display; an ID outside that display is rejected.
+
+### Errors Are Responses Too
+
+Try the following independent examples against the practice prototype:
+
+| Command or input | Expected response | What it teaches |
+|---|---|---|
+| `curl -i http://localhost:8000/carousels/missing` | `404` and `{"detail":"Carousel not found"}` | A valid request can refer to a missing resource. |
+| Create with `"total_alternatives":"many"` | `422` with validation details | The field must be an integer. |
+| Create with `"total_alternatives":2` and `"visible_count":3` | `400` and a visible-count explanation | The types are valid, but the product rule fails. |
+| `curl -i -X PUT http://localhost:8000/carousels/missing` | `405` | This base prototype does not implement PUT. |
+
+Read both the status and the body's `detail` field. A `500` response requires inspecting the server logs rather than guessing from the frontend alone.
+
+### DELETE: Remove a Practice Resource
+
+```bash
+curl -X DELETE "http://localhost:8000/carousels/$carousel_id"
+```
+
+**Expected body:**
+
+```json
+{"message":"Carousel deleted successfully"}
+```
+
+The prototype returns `200`. A later `GET` for the deleted ID returns `404`.
+
+### Optional Exercise: Add a Query Parameter
+
+Add this route to the practice prototype:
+
+```python
+from fastapi import Query
+
+@app.get("/examples/alternatives")
+def filter_example_alternatives(min_clicks: int = Query(default=0, ge=0)):
+    rows = [
+        {"alt_id": 1, "clicks": 1},
+        {"alt_id": 2, "clicks": 3},
+    ]
+    return [row for row in rows if row["clicks"] >= min_clicks]
+```
+
+```bash
+curl "http://localhost:8000/examples/alternatives?min_clicks=2"
+```
+
+**Expected body:** `[{"alt_id":2,"clicks":3}]`. Here the path chooses the operation and the query value controls its filter. A negative value returns `422` because of `ge=0`.
+
+### Optional Exercise: Add a PATCH Request
+
+This small extension updates only the name in the **practice prototype**. Add it after the prototype's existing definitions:
+
+```python
+class CarouselRename(BaseModel):
+    name: str = Field(..., min_length=1)
+
+@app.patch("/examples/carousels/{carousel_id}")
+def rename_example_carousel(carousel_id: str, payload: CarouselRename):
+    carousel = get_carousel_or_404(carousel_id)
+    carousel["name"] = payload.name
+    return {"carousel_id": carousel_id, "name": carousel["name"]}
+```
+
+Create a new carousel if you deleted the earlier example, then use its identifier:
+
+```bash
+curl -X PATCH "http://localhost:8000/examples/carousels/$carousel_id" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Autumn offers"}'
+```
+
+Expect `200` and a body with your `carousel_id` and `"name":"Autumn offers"`. The number of alternatives and other settings remain as they were.
+
+### PUT in the Repository Backend
+
+The modular API under `app/backend/` already has an update route. After starting that version with its PostgreSQL database, use a **full UUID returned under `id`**:
+
+```bash
+carousel_id=your_full_carousel_uuid
+curl -i -X PUT "http://localhost:8000/carousels/$carousel_id" \
+  -H "Content-Type: application/json" \
+  -d '{"round_number":2}'
+```
+
+Expect `200` and a carousel response containing `"round_number":2`. This is the repository's partial-update behavior described above. An invalid UUID produces `422`; a valid UUID absent from the database produces `404`. Use `/docs` on the running version to inspect its supported routes and schemas.
+
+## Make the Same Requests from Python
+
+With the `requests` package installed, run this against a fresh **practice prototype**. These are real HTTP calls, just like the frontend will make.
+
+```python
+import requests
+
+base_url = "http://localhost:8000"
+
+created = requests.post(
+    f"{base_url}/carousels",
+    json={"name": "Python demo", "total_alternatives": 4, "visible_count": 2},
+    timeout=5,
+)
+created.raise_for_status()
+carousel_id = created.json()["carousel_id"]
+print("Create status:", created.status_code)
+
+visible = requests.get(f"{base_url}/carousels/{carousel_id}/display", timeout=5)
+visible.raise_for_status()
+clicked_id = visible.json()[0]["alt_id"]
+
+feedback = requests.post(
+    f"{base_url}/carousels/{carousel_id}/feedback",
+    json={"clicked_alt_id": clicked_id},
+    timeout=5,
+)
+feedback.raise_for_status()
+
+analytics = requests.get(f"{base_url}/carousels/{carousel_id}/analytics", timeout=5)
+analytics.raise_for_status()
+print("Clicks recorded:", analytics.json()["total_clicks"])
+print("Rounds:", analytics.json()["rounds"])
+
+deleted = requests.delete(f"{base_url}/carousels/{carousel_id}", timeout=5)
+deleted.raise_for_status()
+print(deleted.json()["message"])
+```
+
+**Expected output:**
+
+```text
+Create status: 200
+Clicks recorded: 1
+Rounds: 1
+Carousel deleted successfully
+```
+
+`json=` serializes a Python dictionary as JSON and sets the content type. `response.json()` reads the returned JSON. `raise_for_status()` raises on HTTP error statuses; connection errors and timeouts are separate exceptions. Use a timeout so a call cannot wait indefinitely. See [Requests quick start](https://requests.readthedocs.io/en/latest/user/quickstart/).
+
+```{mermaid}
+sequenceDiagram
+    participant P as Python requests client
+    participant A as Practice API
+    P->>A: POST /carousels with JSON
+    A-->>P: 200 with carousel_id
+    P->>A: GET display using that ID
+    A-->>P: Selected alternatives
+    P->>A: POST feedback with one displayed ID
+    A-->>P: Event with reward 1
+    P->>A: GET analytics
+    A-->>P: Updated metrics
+    P->>A: DELETE practice carousel
+    A-->>P: Confirmation
+```
+
+**Read top to bottom:** each response provides information needed by the next request. The client keeps the returned identifier rather than inventing one.
 
 ## How the Frontend Will Use These Requests Later
 

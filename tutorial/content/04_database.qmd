@@ -1,56 +1,310 @@
 ---
 title: "Database | PostgreSQL"
-subtitle: "Schema Design, Setup, and ERD"
+subtitle: "SQLAlchemy ORM, Product Models, and Environment Configuration"
 categories: [PostgreSQL, SQL, Docker, pgAdmin]
 image_path: "../img/database"
 ---
 
 ## Overview
 
-At this page focuses on setting up and interacting with a PostgreSQL database for the **Bayesian Carousel Bandits** project.
+This lesson connects Python objects to persistent PostgreSQL records for the carousel product. We will explain ORM concepts, read the product's actual SQLAlchemy models, follow a database transaction, and configure the connection with an `.env` file.
 
-**It covers:**
+### Two Schema Versions in This Repository
 
-- Running PostgreSQL with Docker
-- Accessing the database using pgAdmin
-- Designing the relational schema for the carousel application
-- Creating tables using SQL
-- Understanding how the database supports the Streamlit MVP and the future FastAPI backend
+| Version | Source | How to recognize it |
+|---|---|---|
+| **Current backend product models** | `app/backend/db/models.py` | UUID carousel `id`; three tables: `carousels`, `alternatives`, and `interactions`; displayed alternative IDs stored in JSON. |
+| **Normalized ETL teaching design** | `app/etl/Database/models.py` | Integer `carousel_id`; four tables, including `interaction_events` and `event_displayed_alternatives`. |
 
-This database is designed for an interactive product where users create carousel projects, display a subset of alternatives, collect click feedback, and analyze the results over time.
+Use the backend version when following the current API. The normalized design is retained below as a separate data-modeling exercise. Give the exercises separate databases: tables with the same names have different columns and key types. `create_all()` creates missing tables; it does not migrate one design into the other.
 
+## What Is an ORM?
 
-### Database Design
+An **Object-Relational Mapper (ORM)** connects Python objects to relational database records. We describe a table using a Python class and work with instances of that class. SQLAlchemy translates those operations into SQL when the session executes them.
 
-The database is built around the lifecycle of a carousel experiment.
+| Python / SQLAlchemy | PostgreSQL idea | Product example |
+|---|---|---|
+| Model class | Table | `Carousel` → `carousels` |
+| Object instance | Row | One carousel named `Summer offers` |
+| `Column(...)` | Column and its database type | `name` stored as a string |
+| `primary_key=True` | Unique row identifier | A carousel's UUID `id` |
+| `ForeignKey(...)` | Reference to another table | An alternative's `carousel_id` |
+| `relationship(...)` | Python navigation between related objects | `carousel.alternatives` |
+| `Session` | Coordinates queries and a transaction | Add changes, then commit or roll back |
 
-A user creates a carousel project, defines how many alternatives exist, chooses how many are visible per round, and then records user interaction events as the experiment runs.
+```{mermaid}
+flowchart LR
+    accTitle: How an ORM connects Python code to SQL rows
+    accDescr: Python model objects are passed to a SQLAlchemy session. SQLAlchemy uses its engine and database driver to send SQL to PostgreSQL, and returns rows as model objects.
+    O["Python objects<br/>Carousel, Alternative"] <-->|"add or query"| S["SQLAlchemy Session"]
+    S <-->|"execute SQL"| E["Engine + driver"]
+    E <-->|"SQL / rows"| D[("PostgreSQL tables")]
+```
 
-**The schema includes the following main entities:**
+**Read the arrows in both directions.** Creating an object only creates a Python value. Adding it to a session schedules persistence. A flush sends pending SQL; committing makes the transaction durable. A query can load records back into Python objects. See [SQLAlchemy's ORM quick start](https://docs.sqlalchemy.org/en/20/orm/quickstart.html).
 
-- `carousels` — stores carousel projects
-- `alternatives` — stores the bandit alternatives belonging to a carousel
-- `interaction_events` — stores each user interaction round
-- `event_displayed_alternatives` — stores which alternatives were shown during each event and whether they were clicked
+### API Schemas and ORM Models Have Different Jobs
 
-**This structure is appropriate for:**
+The repository uses **Pydantic schemas** in `app/backend/db/schemas.py` to describe API inputs and outputs. It uses **SQLAlchemy models** in `app/backend/db/models.py` to describe stored records. A validated request still needs application code to create an ORM object and save it.
 
-- application state,
-- online learning updates,
-- and future analytics and reporting
+```{mermaid}
+flowchart LR
+    accTitle: API validation and database persistence are separate steps
+    accDescr: JSON input is validated by a Pydantic request schema. Endpoint code creates a SQLAlchemy object, and a session writes that object to a database row.
+    J["JSON request"] --> P["Pydantic schema<br/>Validate input"]
+    P --> F["Endpoint code<br/>Apply product rules"]
+    F --> O["SQLAlchemy model<br/>Describe a stored object"]
+    O --> D[("Database row<br/>Saved through a session")]
+```
 
+**Read the arrows as a conversion:** input data becomes a validated Python value, then a persistent object, then a row. Defining a Pydantic `BaseModel` alone does not create a SQL table.
 
-![]({{< meta image_path >}}/erd.png)
+## The Product's Actual SQLAlchemy Models
 
+The following code is copied from **`app/backend/db/models.py`**. `Base` comes from `app/backend/db/database.py`, where the backend creates its engine and session factory.
 
-### Docker Architecture
+```python
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+import uuid
+from datetime import datetime
 
-For this session we are going to build
-![]({{< meta image_path >}}/docker_0.jpg)
+from .database import Base
 
-## Database Schema (SQL Representation)
+class Carousel(Base):
+    __tablename__ = "carousels"
 
-**Below is the SQL version of the proposed schema:**
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String, nullable=False)
+    total_alternatives = Column(Integer, nullable=False)
+    visible_count = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    round_number = Column(Integer, default=1)
+
+    alternatives = relationship("Alternative", back_populates="carousel", cascade="all, delete-orphan")
+    interactions = relationship("Interaction", back_populates="carousel", cascade="all, delete-orphan")
+
+class Alternative(Base):
+    __tablename__ = "alternatives"
+
+    id = Column(Integer, primary_key=True, index=True)
+    carousel_id = Column(UUID(as_uuid=True), ForeignKey("carousels.id"), nullable=False)
+    alt_id = Column(Integer, nullable=False)  # Position within carousel
+    title = Column(String, nullable=False)
+    alpha = Column(Integer, default=1)
+    beta = Column(Integer, default=1)
+    impressions = Column(Integer, default=0)
+    clicks = Column(Integer, default=0)
+
+    carousel = relationship("Carousel", back_populates="alternatives")
+
+class Interaction(Base):
+    __tablename__ = "interactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    carousel_id = Column(UUID(as_uuid=True), ForeignKey("carousels.id"), nullable=False)
+    round = Column(Integer, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    displayed = Column(JSON, nullable=False)  # List of alt_ids displayed
+    clicked = Column(Integer, nullable=True)  # alt_id clicked, or None
+    reward = Column(Integer, nullable=False)  # 0 or 1
+
+    carousel = relationship("Carousel", back_populates="interactions")
+```
+
+### `Carousel`: the Parent Record
+
+- `__tablename__ = "carousels"` chooses the SQL table name.
+- `id` is a UUID primary key. `default=uuid.uuid4` asks SQLAlchemy to generate a fresh identifier during insertion; passing the function lets it run for each new record.
+- `nullable=False` requires values for the name and size settings.
+- `created_at` and `round_number` have Python-side insert defaults.
+- `alternatives` and `interactions` let us navigate from a carousel object to its children.
+
+### `Alternative`: an Option Belonging to One Carousel
+
+There are two identifiers with different jobs:
+
+| Field | Meaning |
+|---|---|
+| `id` | The unique primary key of the row across the entire `alternatives` table. |
+| `alt_id` | The option's local label within a carousel, such as `1`, `2`, or `3`. |
+| `carousel_id` | The UUID of the parent carousel. |
+
+`alpha` and `beta` store the Beta distribution parameters; `impressions` and `clicks` store counts. In this backend version these are integer counts. A Python relationship such as `alternative.carousel` loads or refers to the parent object.
+
+### `Interaction`: What Happened in One Round
+
+- `displayed` is JSON holding local alternative IDs, such as `[1, 3]`.
+- `clicked` holds the local ID selected by the user, or `None` for no click.
+- `reward` records the outcome, conventionally `0` or `1`.
+- `round` and `timestamp` tell us when the event occurred.
+
+`clicked` is currently a plain integer, not a foreign key. The models also do not define database checks for valid visible counts or rewards. Those rules need explicit application validation and/or additional database constraints; field names and comments alone do not enforce them.
+
+### Foreign Key vs. Python Relationship
+
+```{mermaid}
+erDiagram
+    CAROUSELS ||--o{ ALTERNATIVES : contains
+    CAROUSELS ||--o{ INTERACTIONS : records
+    CAROUSELS {
+        UUID id PK
+        string name
+        int round_number
+    }
+    ALTERNATIVES {
+        int id PK
+        UUID carousel_id FK
+        int alt_id
+    }
+    INTERACTIONS {
+        int id PK
+        UUID carousel_id FK
+        json displayed
+        int clicked
+    }
+```
+
+**Read `one → many`:** one carousel can have many alternatives and interactions. `ForeignKey("carousels.id")` creates a database constraint on a column. `relationship(...)` provides Python object navigation and does not add another SQL column. `back_populates` connects the two directions.
+
+The parent relationships use `cascade="all, delete-orphan"`. Through the ORM, children follow the parent's lifecycle, and removing a child from the parent's collection can mark it for deletion. This is different from a database `ON DELETE CASCADE` constraint, which is not declared on these backend foreign keys. See [relationship patterns](https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html) and [ORM cascades](https://docs.sqlalchemy.org/en/20/orm/cascades.html).
+
+### What SQL Does This Mapping Describe?
+
+The following PostgreSQL DDL is compiled from the actual model metadata. It describes the tables; SQLAlchemy also creates indexes declared with `index=True`.
+
+```sql
+CREATE TABLE carousels (
+	id UUID NOT NULL,
+	name VARCHAR NOT NULL,
+	total_alternatives INTEGER NOT NULL,
+	visible_count INTEGER NOT NULL,
+	created_at TIMESTAMP WITHOUT TIME ZONE,
+	round_number INTEGER,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE alternatives (
+	id SERIAL NOT NULL,
+	carousel_id UUID NOT NULL,
+	alt_id INTEGER NOT NULL,
+	title VARCHAR NOT NULL,
+	alpha INTEGER,
+	beta INTEGER,
+	impressions INTEGER,
+	clicks INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY(carousel_id) REFERENCES carousels (id)
+);
+
+CREATE TABLE interactions (
+	id SERIAL NOT NULL,
+	carousel_id UUID NOT NULL,
+	round INTEGER NOT NULL,
+	timestamp TIMESTAMP WITHOUT TIME ZONE,
+	displayed JSON NOT NULL,
+	clicked INTEGER,
+	reward INTEGER NOT NULL,
+	PRIMARY KEY (id),
+	FOREIGN KEY(carousel_id) REFERENCES carousels (id)
+);
+```
+
+Notice that `default=1` and `default=datetime.utcnow` do not appear as SQL `DEFAULT` clauses. They are supplied by SQLAlchemy when it inserts a record. A `server_default` is a separate setting used when PostgreSQL itself should supply a value, including for direct SQL inserts. See [column defaults](https://docs.sqlalchemy.org/en/20/core/defaults.html).
+
+### Create Tables, Then Work with Records
+
+This is the table-creation pattern used in `app/backend/main.py`:
+
+```python
+from .db import models
+from .db.database import engine
+
+models.Base.metadata.create_all(bind=engine)
+```
+
+Importing `models` registers the tables with `Base.metadata`. The engine knows how to connect to PostgreSQL. `create_all()` checks for missing tables and creates them; use a migration tool when an existing schema must change. See [SQLAlchemy metadata and schema creation](https://docs.sqlalchemy.org/en/20/core/metadata.html#creating-and-dropping-database-tables).
+
+### Save a Carousel and Its Alternatives
+
+The next example is written for a Python session launched from `app/`, with the backend dependencies installed and `DATABASE_URL` set to a database using the backend schema.
+
+```python
+from backend.db.database import SessionLocal
+from backend.db.models import Carousel, Alternative
+
+with SessionLocal() as session:
+    carousel = Carousel(
+        name="Summer offers",
+        total_alternatives=2,
+        visible_count=1,
+    )
+    carousel.alternatives = [
+        Alternative(alt_id=1, title="Free delivery"),
+        Alternative(alt_id=2, title="Discount"),
+    ]
+    session.add(carousel)
+    try:
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    session.refresh(carousel)
+    print(carousel.name, carousel.round_number, len(carousel.alternatives))
+```
+
+**Expected output:**
+
+```text
+Summer offers 1 2
+```
+
+The relationship supplies the children's `carousel_id` when the parent and children are inserted. `commit()` flushes the inserts and commits the transaction. `refresh()` reloads the parent record. Closing the session releases its database resources.
+
+```{mermaid}
+flowchart TD
+    accTitle: A database transaction has a success and a failure path
+    accDescr: Create Python objects, add them to a session, and try to commit. On success the records are saved. On failure roll back the transaction and report the error. Close the session in either case.
+    O["Create Python objects"] --> A["session.add"]
+    A --> C["session.commit<br/>Flush SQL and commit transaction"]
+    C -->|"success"| S["Records saved"]
+    C -->|"failure"| R["session.rollback<br/>Discard uncommitted changes"]
+    S --> X["Close session"]
+    R --> X
+```
+
+The example saves the parent and children in one transaction. Compare this with `app/backend/db/crud.py`, whose current creation function commits the parent first and the alternatives in a second transaction. Grouping dependent changes in one transaction is a useful improvement when they should succeed together. See [session and transaction basics](https://docs.sqlalchemy.org/en/20/orm/session_basics.html).
+
+### Read the Same Records with SQL and the ORM
+
+```python
+from sqlalchemy import select
+from backend.db.database import SessionLocal
+from backend.db.models import Carousel
+
+with SessionLocal() as session:
+    names = session.scalars(
+        select(Carousel.name).where(Carousel.name == "Summer offers")
+    ).all()
+    print(names)
+```
+
+After the insert above, expect `['Summer offers']` in a fresh practice database. The corresponding SQL query is:
+
+```sql
+SELECT name FROM carousels WHERE name = 'Summer offers';
+```
+
+## Normalized ETL Design: A Separate Exercise
+
+The following four-table design belongs to **`app/etl/Database/models.py`**. It stores displayed alternatives in individual rows rather than the backend's JSON list. Its integer carousel IDs and table names differ from the backend model version above.
+
+![Normalized ETL schema]({{< meta image_path >}}/erd.png)
+
+### Normalized Schema in SQL
+
+**This is a SQL illustration of the normalized ETL design.** It includes additional `CHECK` rules; matching ORM models would need explicit `CheckConstraint` declarations to create those rules.
 
 ```sql
 CREATE TABLE carousels (
@@ -92,9 +346,9 @@ CREATE TABLE event_displayed_alternatives (
 ```
 
 
-### Schema Design
+### Reading the Normalized Design
 
-This schema supports both the current MVP and the future full-stack product.
+Use this schema for the ETL modeling exercise; the current backend uses the separate model mapping above.
 
 ### `carousels`
 
@@ -154,9 +408,9 @@ This table is important because it lets us reconstruct:
 - and which alternative was selected
 
 
-## Creating Tables Using SQLAlchemy
+### SQLAlchemy Models for the Normalized ETL Design
 
-### Folder sructure
+#### Folder Structure
 
 
 
@@ -170,7 +424,6 @@ This table is important because it lets us reconstruct:
 │   │   ├── database.py
 │   │   └── models.py
 │   ├── __init__.py
-│   ├── .env
 │   ├── .python-version
 │   ├── Dockerfile
 │   ├── create_tables.py
@@ -182,7 +435,7 @@ This table is important because it lets us reconstruct:
 ```
 
 
->The same schema can later be represented with SQLAlchemy models.
+>The normalized mapping below is already implemented in the ETL folder. Keep its database separate from the backend model exercise.
 
 
 
@@ -372,9 +625,9 @@ class EventDisplayedAlternatives(Base):
 
 
 
-## Executable Table Creation
+### Create Tables for the ETL Exercise
 
-To create all tables:
+From the ETL Python environment, create the normalized tables in its separate practice database:
 
 ```python
 from Database.database import Base, engine
@@ -386,16 +639,17 @@ Base.metadata.create_all(engine)
 
 ## Running the Database
 
-Start all services, including PostgreSQL and pgAdmin:
+From the repository root, change to `app/`. With the configuration below prepared, start PostgreSQL and pgAdmin:
 
 ```bash
-docker compose up --build
+cd app
+docker compose up -d db pgadmin
 ```
 
 If the services are already built, you can also run:
 
 ```bash
-docker compose up
+docker compose up -d db pgadmin
 ```
 
 ---
@@ -408,10 +662,9 @@ Open pgAdmin in your browser:
 http://localhost:5050
 ```
 
-### Default Credentials
+### Login Credentials
 
-- Email: `admin@admin.com`
-- Password: `admin`
+Use `PGADMIN_EMAIL` and `PGADMIN_PASSWORD` from `app/.env`. The Compose file maps these to the variables expected by the pgAdmin image.
 
 ---
 
@@ -437,28 +690,149 @@ When opening pgAdmin for the first time:
 
 ---
 
-## Environment Variables
+## Environment Variables and the `.env` File {#environment-variables-and-the-env-file}
 
-**Create a `.env` file in the project root:**
+An **environment variable** is a named setting available to a running process. An **`.env` file** is a convenient local text file containing those settings. It keeps deployment choices, such as database addresses, separate from application logic.
+
+| Why it matters | Example |
+|---|---|
+| Run the same code in different places | Use a local database during development and a server database after deployment. |
+| Keep credentials out of source code | Read the database password from configuration instead of writing it into a Python function. |
+| Make setup understandable | Share an `.env.example` listing the required keys and placeholders. |
+| Explain service communication | Containers reach the database at `db`; Python running directly on your laptop usually uses `localhost` and the published port. |
+
+### A Local Example for This Repository
+
+Create **`app/.env`**, beside `app/docker-compose.yaml`. These values are invented examples for a local teaching database:
 
 ```env
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=carousel
-PGADMIN_DEFAULT_EMAIL=admin@admin.com
-PGADMIN_DEFAULT_PASSWORD=admin
+DB_USER=carousel_user
+DB_PASSWORD=local_demo_password
+DB_NAME=carousel_tutorial
+DB_HOST=db
+DB_PORT=5432
+PGADMIN_EMAIL=teacher@example.com
+PGADMIN_PASSWORD=local_pgadmin_password
 ```
 
-**These values will later be reused in:**
+`DB_NAME` chooses the initial database name. `DB_USER` and `DB_PASSWORD` configure the database login. The `PGADMIN_*` values configure the separate pgAdmin login. Changing the PostgreSQL initialization variables does not rename users or databases already stored in an existing data directory.
 
-- Docker Compose
-- FastAPI database connection settings
-- pgAdmin server configuration
+### Two Different Jobs in Docker Compose
+
+```{mermaid}
+flowchart TB
+    accTitle: From an env file to database configuration inside a container
+    accDescr: Compose reads the env file to substitute values into its configuration. Environment and env_file settings pass selected values to containers. Python reads the resulting process environment with os.getenv, then SQLAlchemy connects to PostgreSQL.
+    F["app/.env<br/>Local key-value settings"] --> C["Compose reads settings<br/>and substitutes variables"]
+    C --> E["environment or env_file<br/>sets container variables"]
+    E --> P["Python os.getenv<br/>reads process environment"]
+    P --> S["SQLAlchemy engine<br/>uses DATABASE_URL"]
+    S --> D[("PostgreSQL")]
+```
+
+**Follow the arrows:** a file on disk does not automatically become configuration inside every container. Compose first reads values for substitution. We then choose which values to pass to each container through `environment` or `env_file`.
+
+The relevant pattern in the repository is:
+
+```yaml
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+  backend:
+    # Build settings omitted from this excerpt.
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+```
+
+1. `${DB_USER}` is replaced by Compose before it starts the containers.
+2. The database image expects `POSTGRES_USER`; `DB_USER` is our configuration key mapped to it.
+3. `env_file` passes file entries into the backend's environment.
+4. The explicit `environment` entry supplies `DATABASE_URL`; it takes precedence over an `env_file` value with the same name.
+
+Read [Compose interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/) and [container environment configuration](https://docs.docker.com/compose/how-tos/environment-variables/set-environment-variables/).
+
+### Why `db` Here and `localhost` Elsewhere?
+
+| Where Python is running | Example connection URL |
+|---|---|
+| Inside the backend container on the Compose network | `postgresql://carousel_user:local_demo_password@db:5432/carousel_tutorial` |
+| Directly on the laptop, with PostgreSQL published on port `5432` | `postgresql://carousel_user:local_demo_password@localhost:5432/carousel_tutorial` |
+
+Inside a container, `localhost` refers to that container. On the Compose network, the service name `db` resolves to the database service. A password containing URL-reserved characters needs URL encoding or a structured SQLAlchemy `URL` object when building a connection URL.
+
+### Reading Settings in Python
+
+The current backend uses `os.getenv` and receives `DATABASE_URL` from Compose:
+
+```python
+import os
+
+database_url = os.getenv("DATABASE_URL")
+if not database_url:
+    raise RuntimeError("DATABASE_URL is required")
+```
+
+`os.getenv` reads the process environment; it does not open `.env` files. For a local practice script run from `app/`, you can explicitly load a file after installing `python-dotenv`:
+
+```python
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv(Path.cwd() / ".env")  # Run this example from app/.
+database_url = os.environ["DATABASE_URL"]
+```
+
+For this local example, add a `DATABASE_URL` using `localhost` to your private file. `load_dotenv` keeps already-set environment variables by default. This loader is a teaching addition; the backend's current database module relies on Compose or your shell to supply its settings. See [python-dotenv](https://bbc2.github.io/python-dotenv/).
+
+### Keep Real Values Private and Share a Template
+
+An `.env` file is plain text, not encrypted storage. Keep real credentials out of Git and avoid printing connection strings in logs. Share an `.env.example` containing required keys and placeholder values instead.
+
+A suitable `.gitignore` pattern is:
+
+```gitignore
+**/.env
+**/.env.*
+!**/.env.example
+```
+
+Ignoring a file only affects untracked files. Check whether your file is already tracked before assuming an ignore rule protects it; do not put real values into the tutorial examples. For deployed systems, supply credentials through the deployment platform's secret configuration.
+
+### Check Configuration Without Showing Credentials
+
+From `app/`, with the backend running:
+
+```bash
+docker compose exec backend python -c "import os; print('DATABASE_URL configured:', bool(os.getenv('DATABASE_URL')))"
+```
+
+**Expected output:**
+
+```text
+DATABASE_URL configured: True
+```
+
+After changing settings used by a running service, recreate that container to apply the new configuration:
+
+```bash
+docker compose up -d --force-recreate backend
+```
+
+The file change alone does not replace the environment of an existing process.
 
 ---
 
-
 ## Running Queries in pgAdmin
+
+The following queries target the **normalized ETL exercise** with integer carousel IDs. For the backend database, query `carousels`, `alternatives`, and `interactions`, and filter by a UUID instead.
 
 
 

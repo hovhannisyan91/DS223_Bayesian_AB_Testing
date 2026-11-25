@@ -1,6 +1,6 @@
 site_name: DS223 Group Project
-site_url: https://hovhannisyan91.github.io/DS223_Group_Project/
-repo_url: https://github.com/hovhannisyan91/DS223_Group_Project
+site_url: https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/
+repo_url: https://github.com/hovhannisyan91/DS223_Bayesian_AB_Testing
 
 docs_dir: docs
 site_dir: site
@@ -39,7 +39,7 @@ nav:
   - API: api.md
   - APP: app.md
   - API models: api_models.md
-  - Tutorial: https://hovhannisyan91.github.io/DS223_Group_Project/tutorial/
+  - Tutorial: https://hovhannisyan91.github.io/DS223_Bayesian_AB_Testing/tutorial/
 
 markdown_extensions:
   - admonition

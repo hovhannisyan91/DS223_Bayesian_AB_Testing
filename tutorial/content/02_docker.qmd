@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Docker"
-subtitle: "Installation, Basic Commands"
+subtitle: "Images, Containers, Commands, and Compose"
 categories: [Docker, Microservices, docker-compose, Dockerfile]
 image_path: "../img/docker"
 ---
@@ -157,11 +157,237 @@ We will go over these during live sessions.
 ### Useful Images for the Course
 
 - `postgres:17`
-- `pgadmin:latest`
+- `dpage/pgadmin4`
 - `python:3.13-slim`
 - `jupyter/base-notebook`
 
 
+
+## Docker Commands: Predict, Run, Explain
+
+In this lab, each command answers a question about images, containers, or communication. **Outputs below are representative and sometimes abbreviated.** Versions, IDs, timestamps, progress messages, and column spacing will vary on your machine.
+
+Use a disposable container named `tutorial-web` for the first exercises. It runs Python's small HTTP server so we can study Docker before adding our product code. This server is a teaching example, not the carousel backend.
+
+```{mermaid}
+flowchart LR
+    accTitle: Docker image and container lifecycle
+    accDescr: Pull an image, run a new container, inspect it while running, stop and restart it, and finally remove the stopped container. The downloaded image remains.
+    I["Download image<br/>docker pull"] --> R["Create and start<br/>docker run"]
+    R --> O["Observe<br/>ps, logs, exec"]
+    O --> S["Stop<br/>docker stop"]
+    S -->|"docker start"| O
+    S --> X["Remove container<br/>docker rm"]
+```
+
+**Follow the arrows:** an image is the starting package; the container is the instance we create from it. Stopping preserves that instance, starting resumes it, and removing deletes that instance. The image remains available for another run.
+
+### 1. Can the CLI Reach Docker Engine?
+
+```bash
+docker version
+```
+
+**Expected output, abbreviated:**
+
+```text
+Client:
+ Version: <installed client version>
+ ...
+Server: Docker Desktop
+ Engine:
+  Version: <installed engine version>
+ ...
+```
+
+The **Client** is the command-line tool. The **Server** is Docker Engine, which runs containers. A connection error mentioning `docker.sock` means the CLI cannot reach the engine; start Docker Desktop and try again. A successful `docker --version` alone only confirms the CLI is installed.
+
+### 2. Download an Image
+
+```bash
+docker pull python:3.12-slim
+```
+
+**Expected output, abbreviated:**
+
+```text
+3.12-slim: Pulling from library/python
+...: Pull complete
+Digest: sha256:<image digest>
+Status: Downloaded newer image for python:3.12-slim
+```
+
+If it is already downloaded and current, the final status can say **Image is up to date**. No container has been started yet.
+
+```bash
+docker image ls python
+```
+
+**Expected output, abbreviated:**
+
+```text
+REPOSITORY   TAG         IMAGE ID       ...
+python       3.12-slim   <image-id>     ...
+```
+
+This lists the local image package. Compare it with the running-container list in the next step.
+
+### 3. Start a Container and Publish a Port
+
+```bash
+docker run --name tutorial-web -d -p 8088:8000 python:3.12-slim python -u -m http.server 8000
+```
+
+**Expected output:**
+
+```text
+<new container ID>
+```
+
+- `--name tutorial-web` gives the instance a memorable name.
+- `-d` leaves it running in the background.
+- `-p 8088:8000` forwards host port `8088` to container port `8000`.
+- `python:3.12-slim` selects the image.
+- Everything after the image name is the program to run inside the container.
+
+Open `http://localhost:8088`. You should see a directory listing from the Python HTTP server.
+
+```{mermaid}
+flowchart LR
+    accTitle: Host port to container port mapping
+    accDescr: A browser requests localhost port 8088. Docker forwards the connection to the Python HTTP server at port 8000 inside tutorial-web.
+    B["Browser<br/>localhost:8088"] <-->|"published port"| P["Docker port forwarding<br/>8088 to 8000"]
+    P <-->|"HTTP"| C["tutorial-web container<br/>Python server on 8000"]
+```
+
+**The two ports can be different.** The browser uses the host-side port. The program inside the container keeps listening on its own port. See [the Docker run reference](https://docs.docker.com/reference/cli/docker/container/run/).
+
+### 4. Is It Running?
+
+```bash
+docker ps --filter name=tutorial-web --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
+
+**Expected output, abbreviated:**
+
+```text
+NAMES          STATUS          PORTS
+tutorial-web   Up ...          0.0.0.0:8088->8000/tcp ...
+```
+
+`Up` means the container process is running. It does not by itself prove the application is ready to handle requests. `docker ps` shows running containers; `docker ps -a` includes stopped ones. See [container listing](https://docs.docker.com/reference/cli/docker/container/ls/).
+
+### 5. Read the Application's Logs
+
+```bash
+docker logs tutorial-web
+```
+
+**Expected output, abbreviated:**
+
+```text
+Serving HTTP on 0.0.0.0 port 8000 ...
+... "GET / HTTP/1.1" 200 -
+```
+
+The request line appears after visiting the page. The `200` is an HTTP success status. Logs are the program's output, which helps us understand what the application is doing.
+
+### 6. Run Another Command Inside the Existing Container
+
+```bash
+docker exec tutorial-web python -c "import sys; print('Python inside container:', sys.version_info.major, sys.version_info.minor)"
+```
+
+**Expected output:**
+
+```text
+Python inside container: 3 12
+```
+
+This uses Python **inside the running container**. `exec` starts an additional process in that container; it does not create another container.
+
+### 7. Stop, Start, and Remove the Practice Container
+
+```bash
+docker stop tutorial-web
+```
+
+**Expected output:** `tutorial-web`.
+
+```bash
+docker ps -a --filter name=tutorial-web --format "table {{.Names}}\t{{.Status}}"
+```
+
+**Expected output, abbreviated:**
+
+```text
+NAMES          STATUS
+tutorial-web   Exited (...) ...
+```
+
+The process has stopped, but the container still exists. Its name and exit information are still available.
+
+```bash
+docker start tutorial-web
+```
+
+**Expected output:** `tutorial-web`. Refresh the browser: the same instance is running again.
+
+Finish this practice exercise with:
+
+```bash
+docker stop tutorial-web
+docker rm tutorial-web
+```
+
+Each command prints `tutorial-web`. The container is removed; the Python image remains. Keep product data in a volume or bind mount when it must survive replacing a container.
+
+### 8. Apply the Same Ideas to the Product with Compose
+
+The repository's Compose file is at `app/docker-compose.yaml`. From the repository root, enter that directory:
+
+```bash
+cd app
+docker compose --env-file .env config --services
+```
+
+**Expected service names, with order allowed to vary:**
+
+```text
+db
+pgadmin
+etl
+backend
+frontend
+```
+
+This checks configuration and lists service names without starting them. The [database lesson](04_database.qmd#environment-variables-and-the-env-file) explains how to create `app/.env` using placeholder credentials.
+
+For the **backend model version** of the product, use a database initialized with those models, then start these services:
+
+```bash
+docker compose up -d --build db backend frontend
+```
+
+**Expected output, abbreviated after the image build:**
+
+```text
+Container postgresql_db_aua   Healthy
+Container bandit_backend     Started
+Container streamlit_frontend Started
+```
+
+`--build` rebuilds application images before starting the services; `-d` keeps them in the background. The backend waits for the database health check. The ETL service uses a different schema version, explained in the database lesson, so it is a separate exercise. See [Compose up](https://docs.docker.com/reference/cli/docker/compose/up/).
+
+| Question | Command from `app/` | What to expect |
+|---|---|---|
+| Which services are running? | `docker compose ps` | Service rows with `Up` or `running`; the DB can also show `healthy`. |
+| What is the API doing? | `docker compose logs --tail 10 backend` | Uvicorn startup messages or useful errors. |
+| Is PostgreSQL ready? | `docker compose exec db sh -c 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'` | A line ending in `accepting connections`. |
+| Does the API respond? | `curl http://localhost:8000/health` | `{"status":"ok"}` from the repository backend. |
+| How do I stop this Compose application? | `docker compose down` | Messages showing containers and the application network being removed. |
+
+`down` removes the application's containers. Our repository's database files use a **bind mount** at `app/postgres_data`, which remains on disk. A named volume is another persistence option; the volume section below explains the distinction.
 
 ## Dockerfile
 
@@ -356,7 +582,7 @@ The database stores its data in a Docker volume so the data is not lost when the
 
 ### Example 2 | Frontend, Backend, and Database
 
-This version is closer to the final course project architecture:
+This version shows how a data product can connect a frontend, backend, and database:
 
 ```yaml
 services:
@@ -369,7 +595,7 @@ services:
       - backend
 
   backend:
-    build: ./app/back
+    build: ./app/backend
     container_name: backend
     ports:
       - "8000:8000"
@@ -404,7 +630,7 @@ flowchart TD
 
 ### Example 3 | Jupyter Notebook Server
 
-`A Jupyter Notebook` server can also run inside a container. This is useful for data exploration, EDA, model prototyping, and team reproducibility.
+`A Jupyter Notebook` server can also run inside a container. This is useful for data exploration, EDA, model prototyping, and reproducible environments.
 
 **A simple Dockerfile example:**
 
@@ -492,7 +718,7 @@ flowchart LR
 
 ### Example 4 | `Jupyter` with `PostgreSQL` in `Docker Compose`
 
-A more practical version for the course project is to run Jupyter together with PostgreSQL.
+A practical setup for exploring a data product's data is to run Jupyter together with PostgreSQL.
 
 ```yaml
 services:
@@ -533,7 +759,7 @@ flowchart TD
 
 
 
-**A Jupyter container is helpful when the team wants to work on:**
+**A Jupyter container is helpful for:**
 
 - exploratory data analysis
 - feature engineering
@@ -654,7 +880,7 @@ This means PostgreSQL writes its data into `postgres_data`, so even if the conta
 
 ```{mermaid}
 flowchart TD
-    A[PostgreSQL Container] --> B[/var/lib/postgresql/data]
+    A[PostgreSQL Container] --> B["/var/lib/postgresql/data"]
     B --> C[Named Volume: postgres_data]
     C --> D[Persistent Database Files]
 ```
@@ -686,7 +912,7 @@ services:
 ```{mermaid}
 flowchart LR
     A[Local Folder ./notebooks] <--> B[Jupyter Container]
-    B --> C[/home/jovyan/work]
+    B --> C["/home/jovyan/work"]
 ```
 
 ### Volume syntax
@@ -817,9 +1043,9 @@ docker volume inspect postgres_data
 docker volume rm postgres_data
 ```
 
-### Why volumes matter for our project
+### Why volumes matter for a data product
 
-**In our course project, volumes will likely be used for:**
+**When building a data product, volumes can be used for:**
 
 - PostgreSQL data persistence
 - Jupyter notebook development
@@ -829,6 +1055,6 @@ docker volume rm postgres_data
 
 ::: {.callout-important}
 
-Without volumes, restarting containers would make development much harder and risk losing important project data.s
+Without volumes, removing or recreating containers can cause important data to be lost.
 
 :::

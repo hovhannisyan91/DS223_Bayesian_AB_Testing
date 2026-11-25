@@ -470,347 +470,131 @@ git pull #given the strategy either --rebase or merge
 ```
 
 
-## Branching Strategy for the Group Project
+## Branching for Product Development
 
-For this project, the team **must not work directly on `master`**.
+Use Git to develop a data product in small, reviewable changes. The same workflow works when you are learning independently or collaborating with others.
 
-The repository should follow a simple branch hierarchy where work flows from `lower-level` dependencies to `higher-level` application layers.
+### Keep the Branch Structure Simple
 
-### Branch Hierarchy
+- `main` contains the stable, working version of the application.
+- Create a short-lived feature branch for a specific improvement.
+- Merge the change after checking that it works, then start the next feature from the updated `main`.
 
-**The branch structure should be:**
+The examples below use `main`. If your repository uses `master`, substitute that name in the commands.
 
-- `master`
-- `db`
-- `backend`
-- `frontend`
-- `ds`
+### Organize Branches Around Changes
 
-### Recommended Dependency Logic
+A branch describes a change rather than a permanent developer role. For example:
 
-**The idea behind this structure is:**
+- `feature/carousel-schema`
+- `feature/carousel-api`
+- `feature/analytics-page`
+- `feature/bandit-evaluation`
 
-- `master` is the protected stable branch
-- `db` comes first because the database schema is the foundation
-- `backend` depends on the database design
-- `frontend` depends on the backend API
-- `datascience` can work in parallel, but its outputs will later be integrated into the backend and product
+The database, backend, frontend, and analytical logic still depend on one another. Plan their interfaces and implement them in useful increments; they do not need separate permanent branches.
 
-### Visual Branch Structure
+### Example Branch Flow
 
 ```{mermaid}
 gitGraph
-    commit id: "initial"
-    branch db
-    checkout db
-    commit id: "db setup"
-    branch backend
-    checkout backend
-    commit id: "backend api"
-    branch frontend
-    checkout frontend
-    commit id: "frontend ui"
+    commit id: "working MVP"
+    branch feature-analytics
+    checkout feature-analytics
+    commit id: "add performance chart"
+    commit id: "check chart behavior"
     checkout main
-    branch datascience
-    checkout datascience
-    commit id: "eda + model"
+    merge feature-analytics id: "merge checked feature"
 ```
 
-### What Each Branch Is For
+## Step-by-Step Feature Workflow
 
-#### `master` owned by PM
+### 1. Open the Repository
 
-This is the **main protected branch**.
-
-- It should always contain the most stable version of the project
-- Students should not push directly to `master`
-- Only reviewed and approved work should reach this branch
-
-### `db` owned by Database Developer
-
-This branch is for database-related work.
-
-- PostgreSQL schema
-- table creation
-- SQL scripts
-- seed data
-- connection setup
-
-### `backend` owned by Backend Developer
-
-This branch is for backend development that builds on top of the database branch.
-
-- FastAPI routes
-- business logic
-- integration with PostgreSQL
-- request/response schemas
-- API documentation
-
-### `frontend` owned by Fronten Developer
-
-This branch is for frontend development that depends on the backend.
-
-- Streamlit pages
-- forms
-- dashboards
-- visualizations
-- API consumption from FastAPI
-
-### `datascience` owned by Data Scientist
-
-This branch is for analytical and model-related work.
-
-- exploratory data analysis
-- feature engineering
-- Bayesian logic
-- notebook experiments
-- model packaging for backend integration
-
-## Team Workflow
-
-Each student should work in a branch related to their role.
-
-**A clean workflow is:**
-
-- **DB developer** works from `db`
-- **Backend developer** works from `backend`
-- **Frontend developer** works from `frontend`
-- **Data scientist / analyst** works from `datascience`
-- **Product manager** reviews work, manages pull requests, and merges approved changes
-
-### Important Rule
-
-::: {.callout-important title="Team Rule"}
-
-All students must create **Pull Requests** for their changes and wait for the **Product Manager** to review and merge them.
-
-Students should **not merge their own work directly** into shared branches.
-
-:::
-
-## Step-by-Step Branch Workflow
-
-### 1. Clone the repository
+If you have not cloned it yet:
 
 ```bash
-git clone https://github.com/your-org/your-repo.git
+git clone https://github.com/your-username/your-repo.git
 cd your-repo
 ```
 
-### 2. Pull the latest version of `master`
+Otherwise, open your existing local repository.
+
+### 2. Update the Stable Branch
 
 ```bash
-git checkout master
-git pull origin master
+git checkout main
+git pull --ff-only origin main
 ```
 
-### 3. Create the main role branches once
-
-These branches are usually created once and then reused (you are free to delete it and create new one after the feedback).
+### 3. Create a Feature Branch
 
 ```bash
-git checkout -b db
-git push -u origin db
-
-git checkout master
-git checkout -b datascience
-git push -u origin datascience
-
-git checkout db
-git checkout -b backend
-git push -u origin backend
-
-git checkout backend
-git checkout -b frontend
-git push -u origin frontend
+git checkout -b feature/analytics-page
 ```
 
-### Recommended Daily Workflow for Each Student
+### 4. Implement and Check the Change
 
-#### Database Developer
+Make a focused improvement, such as adding a chart to the analytics page. Run the relevant part of the application and check the result against the intended user behavior.
 
-**The DB developer should work on `db`.**
+Review the files before committing:
 
 ```bash
-git checkout db
-git pull origin db
+git status
+git diff
 ```
 
-**After making changes:**
+### 5. Commit and Push
+
+Stage the files you changed. For example, if you updated the analytics page:
 
 ```bash
-git add .
-git commit -m "Add database schema"
-git push origin db
+git add app/front/pages/Analytics.py
+git commit -m "Add carousel performance chart"
+git push -u origin feature/analytics-page
 ```
 
-Then open a Pull Request to merge the work into the target shared branch when instructed by the Product Manager.
+### 6. Review and Merge
 
-#### Backend Developer
+A **Pull Request (PR)** on GitHub lets you inspect the difference between the feature branch and `main`, describe the change, and keep a record of the review.
 
-The backend developer should work on `backend`.
-
-
-::: {.callout-important}
-
-**Before starting work:**
-
-```bash
-git checkout backend
-git pull origin backend
-```
-:::
-
-**After changes:**
-
-```bash
-git add .
-git commit -m "Add FastAPI endpoints"
-git push origin backend
-```
-
-#### Frontend Developer
-
-The frontend developer should work on `frontend`.
-
-**Before starting work:**
-
-```bash
-git checkout frontend
-git pull origin frontend
-```
-
-**After changes:**
-
-```bash
-git add .
-git commit -m "Update Streamlit interface"
-git push origin frontend
-```
-
-#### Data Scientist / Analyst
-
-The data scientist should work on `ds`.
-
-Before starting work:
-
-```bash
-git checkout ds
-git pull origin ds
-```
-
-After changes:
-
-```bash
-git add .
-git commit -m "Add notebook and model logic"
-git push origin ds
-```
-
-## Feature Branches Under Each Role Branch
-
-For cleaner collaboration, each student can create small feature branches from their team branch.
-
-**Examples:**
-
-- `db/schema-v1`
-- `backend/api-carousel`
-- `frontend/analytics-page`
-- `datascience/beta-bernoulli-model`
-
-**Example for backend:**
-
-```bash
-git checkout backend
-git pull origin backend
-git checkout -b backend/api-carousel
-```
-
-**After work:**
-
-```bash
-git add .
-git commit -m "Implement carousel endpoints"
-git push -u origin backend/api-carousel
-```
-
-**Then open a Pull Request:**
-
-- from `backend/api-carousel`
-- into `backend`
-
-This is safer than everyone committing directly to the same shared branch.
-
+When working independently, you can review and merge your own PR after checking the behavior. When collaborating, a PR also provides a place to ask for feedback.
 
 ## Pull Requests
 
-A **Pull Request (PR)** is a GitHub feature used to propose changes from one branch into another branch.
+### Why Pull Requests Matter
 
->It is the main collaboration mechanism for this project.
+Pull Requests help you:
 
-### Why Pull Requests matter
-
-**Pull Requests help the team:**
-
-- review code before merging
-- discuss implementation choices
-- catch bugs early
-- prevent accidental overwrites
-- keep `master` stable
-
-### Example Pull Request Flow
-
-```{mermaid}
-gitGraph
-    commit id: "master"
-    branch db
-    checkout db
-    commit id: "schema"
-    branch backend
-    checkout backend
-    commit id: "api"
-    branch backend/api-carousel
-    checkout backend/api-carousel
-    commit id: "feature work"
-    checkout backend
-    merge backend/api-carousel id: "PR merged"
-```
+- review the changes before merging,
+- explain what changed and why,
+- record how you checked the result,
+- discuss implementation choices when feedback is useful,
+- keep `main` working.
 
 ### Pull Request Steps on GitHub
 
-**After pushing your branch:**
+After pushing your feature branch:
 
-- open the repository on GitHub
-- click **Compare & pull request**
-- set the correct **base branch**
-- set your **compare branch**
-- add a clear title
-- write a short description of what changed
-- request review if needed
-- wait for the Product Manager to review and merge
+1. Open the repository on GitHub.
+2. Click **Compare & pull request**.
+3. Set **base** to `main` and **compare** to your feature branch.
+4. Add a clear title and describe the product behavior that changed.
+5. Include how you checked it and any known limitations.
+6. Review the diff and address any feedback.
+7. Merge when the change is ready.
 
-### Example PR directions
+For example: `feature/analytics-page` → `main`.
 
-**Use PRs like this:**
+### Continue from the Updated Version
 
-- `db/feature-name` → `db`
-- `backend/feature-name` → `backend`
-- `frontend/feature-name` → `frontend`
-- `datascience/feature-name` → `datascience`
+After the PR is merged:
 
-**Then, after validation, the Product Manager can merge upward:**
+```bash
+git checkout main
+git pull --ff-only origin main
+```
 
-- `db` → `master`
-- `backend` → `master` or after syncing dependency branches
-- `frontend` → `master`
-- `datascience` → `master`
-
-**If the team wants strict dependency flow, the Product Manager can also merge in this order:**
-
-- `db` into `master`
-- `backend` after DB changes are stable
-- `frontend` after backend changes are stable
-- `datascience` when model outputs are ready for integration
+Create a new feature branch from this version for the next improvement.
 
 ## Merge Conflicts
 
@@ -832,8 +616,8 @@ A **merge conflict** happens when Git cannot automatically combine changes from 
 
 **Suppose:**
 
-- Developer A edits `bandit_utils.py`
-- Developer B also edits the same part of `bandit_utils.py`
+- One feature branch changes `bandit_utils.py`
+- Another feature branch changes the same part of `bandit_utils.py`
 
 When one branch is merged first, the second branch may conflict.
 
@@ -841,13 +625,13 @@ When one branch is merged first, the second branch may conflict.
 gitGraph
     commit id: "base"
     
-    branch backend
-    checkout backend
+    branch feature-a
+    checkout feature-a
     commit id: "change A"
     
     checkout main
-    branch datascience
-    checkout datascience
+    branch feature-b
+    checkout feature-b
     commit id: "change B"
 ```
 
@@ -857,9 +641,9 @@ gitGraph
 
 ```python
 <<<<<<< HEAD
-return {"message": "Backend version"}
+return {"message": "First implementation"}
 =======
-return {"message": "Data science version"}
+return {"message": "Alternative implementation"}
 >>>>>>> feature-branch
 ```
 
@@ -897,41 +681,26 @@ git push
 - use Pull Requests early
 - avoid editing the same file in parallel unless necessary
 
-## Suggested Merge Responsibility
+## Recommended Development Process
 
-The Product Manager should be responsible for coordinating merges.
-
-That means:
-
-- checking whether the branch is ready
-- reviewing the Pull Request
-- confirming no major conflicts remain
-- merging into the correct shared branch
-- making sure `master` stays stable
-
-## Recommended Team Process
-
-A practical process for the group is:
-
-1. The student pulls the latest version of the correct parent branch
-2. The student creates or updates a feature branch
-3. The student makes changes locally
-4. The student commits and pushes the branch
-5. The student opens a Pull Request
-6. The Product Manager reviews the PR
-7. The Product Manager merges the PR
-8. Other students pull the updated shared branch before continuing
+1. Choose a small improvement linked to the user's needs.
+2. Update `main` and create a feature branch.
+3. Implement the change locally.
+4. Check the behavior and review the diff.
+5. Commit, push, and open a Pull Request.
+6. Review and merge the working change.
+7. Pull the updated `main` before starting the next improvement.
 
 ## Full Workflow Diagram
 
 ```{mermaid}
 flowchart TD
-    A[Student pulls latest branch] --> B[Create feature branch]
+    A[Choose a product improvement] --> B[Update main and create feature branch]
     B --> C[Develop locally]
-    C --> D[git add / commit / push]
-    D --> E[Open Pull Request]
-    E --> F[Product Manager reviews]
-    F --> G[Merge approved changes]
-    G --> H[Team pulls latest updates]
+    C --> D[Check behavior and review diff]
+    D --> E[Commit and push]
+    E --> F[Open and review Pull Request]
+    F --> G[Merge when ready]
+    G --> H[Pull updated main]
+    H --> A
 ```
-
